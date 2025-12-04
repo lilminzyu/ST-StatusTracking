@@ -21,7 +21,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      # ========== 2. 檢查是否需要更新版本號 ==========
+      # ========== 2. 檢查是否需要發布 ==========
       - name: Check for release tag in commit message
         id: autotag_check
         shell: bash
@@ -41,7 +41,7 @@ jobs:
             echo "bump=" >> "$GITHUB_OUTPUT"
           fi
 
-      # ========== 3. 計算新版本號 ==========
+      # ========== 3. 計算新版本號（僅在 release 時）==========
       - name: Generate new version tag
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         id: autotag
@@ -52,7 +52,7 @@ jobs:
           bump: ${{ steps.autotag_check.outputs.bump }}
           dry-run: true
 
-      # ========== 4. 更新版本號 ==========
+      # ========== 4. 更新版本號（僅在 release 時）==========
       - name: Prepare version string
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         id: package_version
@@ -97,19 +97,22 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # ========== 6. 部署到 main 分支 ==========
-      - name: Deploy to main branch
+      # ========== 6. 提交版本號更新到 dev（僅在 release 時）==========
+      - name: Commit version bump to dev
+        if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         run: |
-          # 配置 git
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # 如果有版本號更新，先提交到 dev 分支
-          if [ "${{ steps.autotag_check.outputs.should_tag }}" == "true" ]; then
-            git add manifest.json package.json
-            git commit -m "[bot] Bump version to ${{ steps.autotag.outputs.new-tag }}" || true
-            git push origin dev
-          fi
+          git add manifest.json package.json
+          git commit -m "[bot] Bump version to ${{ steps.autotag.outputs.new-tag }}" || true
+          git push origin dev
+
+      # ========== 7. 部署到 main 分支（僅在 release 時）==========
+      - name: Deploy to main branch
+        if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           
           # 暫存打包好的文件
           mkdir -p /tmp/deploy
@@ -131,16 +134,24 @@ jobs:
           
           # 提交到 main 分支
           git add .
-          COMMIT_MSG="Auto build from dev - $(git log dev -1 --pretty=format:'%s')"
-          git commit -m "$COMMIT_MSG" || echo "No changes to commit"
+          git commit -m "Release ${{ steps.autotag.outputs.new-tag }}" || echo "No changes to commit"
           
           # 推送到 main 分支
           git push origin main --force
 
-      # ========== 7. 創建 Git Tag ==========
+      # ========== 8. 創建 Git Tag（僅在 release 時）==========
       - name: Create and push git tag
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         run: |
           git checkout dev
           git tag ${{ steps.autotag.outputs.new-tag }}
           git push origin ${{ steps.autotag.outputs.new-tag }}
+
+      # ========== 9. 顯示結果 ==========
+      - name: Summary
+        run: |
+          if [ "${{ steps.autotag_check.outputs.should_tag }}" == "true" ]; then
+            echo "✅ Released version ${{ steps.autotag.outputs.new-tag }} to main branch"
+          else
+            echo "✅ Build successful, but not deployed (no [release] tag in commit message)"
+          fi
