@@ -1,11 +1,69 @@
-node_modules
+# dev/.gitignore
 
-.DS_Store
-Thumbs.db
-
-*.log
-
+# ===== Node.js =====
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+lerna-debug.log*
+
+# ===== 構建輸出 =====
+dist/
+dist-ssr/
+*.local
+
+# ===== IntelliJ IDEA =====
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+.idea_modules/
+
+# ===== VSCode（以防有人用）=====
+.vscode/
+*.code-workspace
+.history/
+
+# ===== 環境變量 =====
+.env
+.env.local
+.env.*.local
+
+# ===== 系統文件 =====
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ===== 日誌和臨時文件 =====
+*.log
+logs/
+*.tmp
+*.temp
+*.swp
+*.swo
+.cache/
+
+# ===== 測試覆蓋率 =====
+coverage/
+*.lcov
+.nyc_output/
+
+# ===== TypeScript =====
+*.tsbuildinfo
+
+# ===== 其他 =====
+.eslintcache
+*.tgz
