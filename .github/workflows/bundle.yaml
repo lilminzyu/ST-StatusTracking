@@ -3,7 +3,7 @@ name: Auto Build and Deploy to Main
 on:
   push:
     branches:
-      - dev  # 只在 dev 分支觸發
+      - dev
   workflow_dispatch:
 
 concurrency:
@@ -19,7 +19,7 @@ jobs:
         with:
           ref: dev
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0  # 獲取完整歷史，用於 git 操作
+          fetch-depth: 0
 
       # ========== 2. 檢查是否需要更新版本號 ==========
       - name: Check for release tag in commit message
@@ -52,8 +52,8 @@ jobs:
           bump: ${{ steps.autotag_check.outputs.bump }}
           dry-run: true
 
-      # ========== 4. 更新 manifest.json 和 package.json 的版本號 ==========
-      - name: Prepare version string for replacement
+      # ========== 4. 更新版本號 ==========
+      - name: Prepare version string
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         id: package_version
         run: |-
@@ -104,14 +104,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # 暫存當前的版本文件（如果有更新版本號）
+          # 如果有版本號更新，先提交到 dev 分支
           if [ "${{ steps.autotag_check.outputs.should_tag }}" == "true" ]; then
             git add manifest.json package.json
             git commit -m "[bot] Bump version to ${{ steps.autotag.outputs.new-tag }}" || true
             git push origin dev
           fi
-
-          # 暫存打包好的 dist 文件
+          
+          # 暫存打包好的文件
           mkdir -p /tmp/deploy
           cp -r dist/ /tmp/deploy/
           cp manifest.json /tmp/deploy/
@@ -119,15 +119,14 @@ jobs:
           cp README.md /tmp/deploy/ 2>/dev/null || true
           cp LICENSE /tmp/deploy/ 2>/dev/null || true
           
-          # 切換到 main 分支（強制切換，忽略本地改動）
+          # 切換到 main 分支（強制切換）
           git fetch origin main:main 2>/dev/null || git checkout --orphan main
           git checkout -f main
           
-          # 清空 main 分支的所有內容
-          git rm -rf . 2>/dev/null || true
-          rm -rf * .* 2>/dev/null || true
-
-          # 複製暫存的文件到 main 分支
+          # 清空 main 分支的所有內容（但保留 .git 目錄）
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
+          
+          # 複製文件到 main 分支
           cp -r /tmp/deploy/* .
           
           # 提交到 main 分支
@@ -138,7 +137,7 @@ jobs:
           # 推送到 main 分支
           git push origin main --force
 
-      # ========== 7. 創建 Git Tag（如果是 release）==========
+      # ========== 7. 創建 Git Tag ==========
       - name: Create and push git tag
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         run: |
