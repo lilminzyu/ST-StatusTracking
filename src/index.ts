@@ -4,3 +4,4 @@ import { initPanel } from '@/panel';
 $(() => {
   initPanel();
 });
+// test
