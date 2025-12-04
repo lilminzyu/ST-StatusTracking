@@ -110,20 +110,25 @@ jobs:
             git commit -m "[bot] Bump version to ${{ steps.autotag.outputs.new-tag }}" || true
             git push origin dev
           fi
+
+          # 暫存打包好的 dist 文件
+          mkdir -p /tmp/deploy
+          cp -r dist/ /tmp/deploy/
+          cp manifest.json /tmp/deploy/
+          cp -r i18n/ /tmp/deploy/ 2>/dev/null || true
+          cp README.md /tmp/deploy/ 2>/dev/null || true
+          cp LICENSE /tmp/deploy/ 2>/dev/null || true
           
-          # 切換到 main 分支（如果不存在則創建）
-          git fetch origin main:main || git checkout --orphan main
-          git checkout main
+          # 切換到 main 分支（強制切換，忽略本地改動）
+          git fetch origin main:main 2>/dev/null || git checkout --orphan main
+          git checkout -f main
           
           # 清空 main 分支的所有內容
-          git rm -rf . || true
-          
-          # 從 dev 分支複製需要的文件
-          git checkout dev -- dist/
-          git checkout dev -- manifest.json
-          git checkout dev -- i18n/ || true
-          git checkout dev -- README.md || true
-          git checkout dev -- LICENSE || true
+          git rm -rf . 2>/dev/null || true
+          rm -rf * .* 2>/dev/null || true
+
+          # 複製暫存的文件到 main 分支
+          cp -r /tmp/deploy/* .
           
           # 提交到 main 分支
           git add .
