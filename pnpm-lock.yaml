@@ -16,7 +16,7 @@ importers:
         version: 13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807))
       '@vueuse/integrations':
         specifier: ^13.9.0
-        version: 13.9.0(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807))
+        version: 13.9.0(focus-trap@7.6.5)(sortablejs@1.15.6)(vue@3.5.25(typescript@6.0.0-dev.20250807))
       '@vueuse/shared':
         specifier: ^13.9.0
         version: 13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807))
@@ -26,6 +26,9 @@ importers:
       pinia:
         specifier: ^3.0.4
         version: 3.0.4(typescript@6.0.0-dev.20250807)(vue@3.5.25(typescript@6.0.0-dev.20250807))
+      sortablejs:
+        specifier: ^1.15.6
+        version: 1.15.6
       tailwindcss:
         specifier: ^4.1.17
         version: 4.1.17
@@ -37,7 +40,7 @@ importers:
         version: 3.5.25(typescript@6.0.0-dev.20250807)
       vue-final-modal:
         specifier: ^4.5.5
-        version: 4.5.5(@vueuse/core@13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807)))(@vueuse/integrations@13.9.0(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807)))(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807))
+        version: 4.5.5(@vueuse/core@13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807)))(@vueuse/integrations@13.9.0(focus-trap@7.6.5)(sortablejs@1.15.6)(vue@3.5.25(typescript@6.0.0-dev.20250807)))(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807))
       zod:
         specifier: ^4.1.13
         version: 4.1.13
@@ -66,6 +69,9 @@ importers:
       '@types/showdown':
         specifier: ^2.0.6
         version: 2.0.6
+      '@types/sortablejs':
+        specifier: ^1.15.9
+        version: 1.15.9
       '@types/toastr':
         specifier: ^2.1.43
         version: 2.1.43
@@ -711,6 +717,9 @@ packages:
 
   '@types/sizzle@2.3.10':
     resolution: {integrity: sha512-TC0dmN0K8YcWEAEfiPi5gJP14eJe30TTGjkvek3iM/1NdHHsdCA/Td6GvNndMOo/iSnIsZ4HuuhrYPDAmbxzww==}
+
+  '@types/sortablejs@1.15.9':
+    resolution: {integrity: sha512-7HP+rZGE2p886PKV9c9OJzLBI6BBJu1O7lJGYnPyG3fS4/duUCcngkNCjsLwIMV+WMqANe3tt4irrXHSIe68OQ==}
 
   '@types/toastr@2.1.43':
     resolution: {integrity: sha512-sLC2fr2OXeE1iyhUixpQ64wQ2tA26awmLidn4tXTLBz4yP/VhtYUKHpmiIyDtztKkHjucdiTLH8F5uRRyhNi2Q==}
@@ -2047,6 +2056,9 @@ packages:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
 
+  sortablejs@1.15.6:
+    resolution: {integrity: sha512-aNfiuwMEpfBM/CN6LY0ibyhxPfPbyFeBTYJKCvzkJ2GkUpazIt3H+QIPAMHwqQ7tMKaHz1Qj+rJJCqljnf4p3A==}
+
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -2821,6 +2833,8 @@ snapshots:
 
   '@types/sizzle@2.3.10': {}
 
+  '@types/sortablejs@1.15.9': {}
+
   '@types/toastr@2.1.43':
     dependencies:
       '@types/jquery': 3.5.33
@@ -3069,13 +3083,14 @@ snapshots:
       '@vueuse/shared': 13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807))
       vue: 3.5.25(typescript@6.0.0-dev.20250807)
 
-  '@vueuse/integrations@13.9.0(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807))':
+  '@vueuse/integrations@13.9.0(focus-trap@7.6.5)(sortablejs@1.15.6)(vue@3.5.25(typescript@6.0.0-dev.20250807))':
     dependencies:
       '@vueuse/core': 13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807))
       '@vueuse/shared': 13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807))
       vue: 3.5.25(typescript@6.0.0-dev.20250807)
     optionalDependencies:
       focus-trap: 7.6.5
+      sortablejs: 1.15.6
 
   '@vueuse/metadata@13.9.0': {}
 
@@ -4127,6 +4142,8 @@ snapshots:
 
   shebang-regex@3.0.0: {}
 
+  sortablejs@1.15.6: {}
+
   source-map-js@1.2.1: {}
 
   source-map-support@0.5.21:
@@ -4403,10 +4420,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vue-final-modal@4.5.5(@vueuse/core@13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807)))(@vueuse/integrations@13.9.0(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807)))(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807)):
+  vue-final-modal@4.5.5(@vueuse/core@13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807)))(@vueuse/integrations@13.9.0(focus-trap@7.6.5)(sortablejs@1.15.6)(vue@3.5.25(typescript@6.0.0-dev.20250807)))(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807)):
     dependencies:
       '@vueuse/core': 13.9.0(vue@3.5.25(typescript@6.0.0-dev.20250807))
-      '@vueuse/integrations': 13.9.0(focus-trap@7.6.5)(vue@3.5.25(typescript@6.0.0-dev.20250807))
+      '@vueuse/integrations': 13.9.0(focus-trap@7.6.5)(sortablejs@1.15.6)(vue@3.5.25(typescript@6.0.0-dev.20250807))
       focus-trap: 7.6.5
       vue: 3.5.25(typescript@6.0.0-dev.20250807)
 

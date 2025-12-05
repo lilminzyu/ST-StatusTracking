@@ -37,9 +37,13 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
   },
+  "vueCompilerOptions": {
+    "globalTypesPath": "./global.d.ts"
+  },
   "include": [
     "*.d.ts",
     "src/**/*.ts",
+    "src/**/*.vue",
     "../../../../**/*.js" // for intelligence
   ],
   "exclude": [

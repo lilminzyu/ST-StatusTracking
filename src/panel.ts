@@ -1,5 +1,6 @@
 import Panel from '@/Panel.vue';
-import { App } from 'vue';
+import { createPinia } from 'pinia';
+import { App, createApp } from 'vue';
 
 const app = createApp(Panel);
 
@@ -19,6 +20,6 @@ const i18n = {
 app.use(i18n);
 
 export function initPanel() {
-  const $app = $('<div id="tavern_extension_example">').appendTo('#extensions_settings2');
+  const $app = $('<div id="status_tracking">').appendTo('#extensions_settings2');
   app.mount($app[0]);
 }

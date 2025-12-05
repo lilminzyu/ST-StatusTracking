@@ -1,0 +1,14 @@
+/* vue-final-modal 樣式修正 */
+.vfm__container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.vfm {
+  z-index: 9999 !important;
+}
+
+.vfm__overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
