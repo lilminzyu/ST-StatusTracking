@@ -29,7 +29,23 @@
       placeholder="欄位說明"
       @input="$emit('update:description', ($event.target as HTMLInputElement).value)"
     />
-
+    <!-- 類型選擇 -->
+    <label>
+      <input 
+        type="radio" 
+        :checked="field.type === 'number'"
+        @change="$emit('update:type', 'number')"
+      />
+      數字
+    </label>
+    <label>
+      <input 
+        type="radio" 
+        :checked="field.type === 'text'"
+        @change="$emit('update:type', 'text')"
+      />
+      文字
+    </label>
     <!-- 刪除按鈕 -->
     <div class="menu_button" @click="$emit('delete')">
       <i class="fa-solid fa-trash"></i>
@@ -50,6 +66,7 @@ defineEmits<{
   'update:enabled': [value: boolean];
   'update:name': [value: string];
   'update:description': [value: string];
+  'update:type': [value: 'number' | 'text'];
   'delete': [];
 }>();
 </script>

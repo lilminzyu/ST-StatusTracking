@@ -5,6 +5,7 @@ export type Field = {
   name: string;
   description: string;
   order: number;
+  type: 'number' | 'text';
 }
 
 // 2. Field schema
@@ -14,6 +15,7 @@ const FieldSchema = z.object({
   name: z.string(),
   description: z.string(),
   order: z.number(),
+  type: z.enum(['number', 'text']).default('number'),
 });
 
 // 3. Settings schema

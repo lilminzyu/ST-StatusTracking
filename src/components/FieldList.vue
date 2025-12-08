@@ -10,6 +10,7 @@
         @update:enabled="updateField(field.id, 'enabled', $event)"
         @update:name="updateField(field.id, 'name', $event)"
         @update:description="updateField(field.id, 'description', $event)"
+        @update:type="updateField(field.id, 'type', $event)"
         @delete="deleteField(field.id)"
       />
     </div>
@@ -71,6 +72,7 @@ function addField() {
     name: '',
     description: '',
     order: tempFields.value.length,
+    type: 'number',
   };
   tempFields.value.push(newField);
 }
