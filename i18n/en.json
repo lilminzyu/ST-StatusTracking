@@ -1,5 +1,19 @@
 {
-  "插件示例": "Plugin Example",
-  "示例按钮": "Example Button",
-  "示例开关": "Example Switch"
+  "狀態追蹤": "Status Tracking",
+  "啟用狀態面板": "Enable Status Panel",
+  "擴充設定": "Extension Settings",
+  "欄位設定": "Field Settings",
+  "側邊欄位置": "Panel Position",
+  "左側": "Left",
+  "右側": "Right",
+  "語言": "Language",
+  "繁體中文": "Traditional Chinese",
+  "English": "English",
+  "世界的另一處...": "Elsewhere in the World...",
+  "尚未設定欄位，請點擊下方「欄位設定」按鈕": "No fields configured. Please click the 'Field Settings' button below.",
+  "新增欄位": "Add Field",
+  "欄位名稱": "Field Name",
+  "欄位說明": "Description",
+  "數字": "Number",
+  "文字": "Text"
 }

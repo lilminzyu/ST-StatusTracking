@@ -54,11 +54,13 @@
         
         <!-- 新聞區塊 -->
         <div class="news-section">
-          <div class="news-header">【世界的另一處...】</div>
-          <div class="news-no-header">
-            <div class="news-divider"></div>
-            <div class="news-title">{{ statusData.data.news.title }}</div>
-            <div class="news-content">{{ statusData.data.news.content }}</div>
+          <div class="news-section2">
+            <div class="news-header">【{{t`世界的另一處...`}}】</div>
+            <div class="news-no-header">
+              <div class="news-divider"></div>
+              <div class="news-title">{{ statusData.data.news.title }}</div>
+              <div class="news-content">{{ statusData.data.news.content }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -102,6 +104,8 @@
 
 <script setup lang="ts">
 import FieldList from '@/components/FieldList.vue';
+import PanelSettings from '@/components/PanelSettings.vue';
+import { useI18nStore } from '@/store/i18n';
 import { useSettingsStore } from '@/store/settings';
 import { useStatusDataStore } from '@/store/statusData';
 import { Popup, POPUP_RESULT, POPUP_TYPE } from '@sillytavern/scripts/popup';
@@ -110,6 +114,7 @@ import { createApp } from 'vue';
 
 const { settings } = storeToRefs(useSettingsStore());
 const statusData = useStatusDataStore();
+const { t } = useI18nStore();
 
 // 計算收合按鈕的 icon
 const getCollapseIcon = computed(() => {
@@ -186,9 +191,39 @@ async function openFieldSettings() {
   fieldApp.unmount();
 }
 
-function openPanelSettings() {
-  // TODO: 打開擴充設定彈窗
-  console.log('打開擴充設定');
+async function openPanelSettings() {
+  const container = document.createElement('div');
+
+  const settingsApp = createApp(PanelSettings, {
+    initialSettings: settings.value,
+  });
+
+  const pinia = createPinia();
+  settingsApp.use(pinia);
+
+  const i18n = {
+    install: (app: any) => {
+      app.config.globalProperties.t = t;
+    },
+  };
+  settingsApp.use(i18n);
+
+  const instance = settingsApp.mount(container) as any;
+
+  const popup = new Popup(container, POPUP_TYPE.TEXT, '', {
+    wide: true,
+    okButton: true,
+    cancelButton: true,
+  });
+
+  const result = await popup.show();
+  if (result === POPUP_RESULT.AFFIRMATIVE) {
+    const updated = instance.getData();
+    settings.value.panel_position = updated.panel_position;
+    settings.value.language = updated.language;
+  }
+
+  settingsApp.unmount();
 }
 </script>
 
@@ -203,7 +238,7 @@ function openPanelSettings() {
   /* bottom: 0;
   background: var(--SmartThemeBlurTintColor); */
   /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); */
-  /* z-index: 1000; */
+  z-index: 1000 !important;
   display: flex;
   /* flex-direction: column; */
   transition: width 0.3s ease, left 0.3s ease, right 0.3s ease;
@@ -279,7 +314,7 @@ function openPanelSettings() {
 
 /* 左側面板的按鈕 - 貼右邊 */
 .collapse-toggle.left {
-  right: -15;  /* <--- 讓按鈕向右凸出，距離面板右邊緣 -30px (按鈕寬度) */
+  right: -15px;  /* <--- 讓按鈕向右凸出，距離面板右邊緣 -15px (按鈕寬度) */
   border-right: 1px solid var(--SmartThemeBorderColor);
   border-left: none;
   border-radius: 0 8px 8px 0;
@@ -321,7 +356,7 @@ function openPanelSettings() {
   /* 讓列表區域有邊框和背景，形成一個整體區塊 */
   background: var(--SmartThemeBlurTintColor); /* 使用帶透明度的背景色 */
   border: 1px solid var(--SmartThemeBorderColor);
-  border-radius: 8px; /* 增加圓角 */
+  border-radius: 5px; /* 增加圓角 */
   padding: 0; /* 內部 padding 靠 status-item 控制 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   overflow: hidden; /* 確保邊框和圓角包裹住內部的項目 */
@@ -404,7 +439,7 @@ function openPanelSettings() {
   color: var(--SmartThemeQuoteColor);
   font-style: italic;
   /* 確保提示訊息也在帶邊框的容器內 */
-  border-radius: 8px; 
+  border-radius: 5px; 
 }
 
 /* 按鈕區 */
@@ -448,7 +483,7 @@ function openPanelSettings() {
   gap: 10px;
   background: var(--SmartThemeBlurTintColor); /* 使用帶透明度的背景色 */
   border: 1px solid var(--SmartThemeBorderColor);
-  border-radius: 8px;
+  border-radius: 5px;
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -486,13 +521,18 @@ function openPanelSettings() {
   background: rgba(var(--SmartThemeQuoteColor), 0.1); /* 使用 custColor 的輕微透明度 */
   border: 2px solid var(--SmartThemeBorderColor);
   border-radius: 5px;
-  padding: 15px;
+  padding: 10px;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
   position: relative;
   overflow: hidden;
   background-image: url('https://i.pinimg.com/736x/7e/5b/16/7e5b16b9cfafe1905c4d39672698cd90.jpg');
   background-size: cover;
   background-position: center;
+}
+.news-section2 {
+  background-color: rgba(255, 255, 255, 0.3); /* 使用 custColor 的輕微透明度 */
+  border-radius: 5px;
+  padding: 5px;
 }
 
 /* 新聞標頭 */

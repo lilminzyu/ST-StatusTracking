@@ -26,6 +26,7 @@ export const Settings = z
     panel_position: z.enum(['left', 'right']).default('right'),
     panel_collapsed: z.boolean().default(false),
     fields: z.array(FieldSchema).default([]),
+    language: z.enum(['zh-TW', 'en']).default('zh-TW'),
   })
   .prefault({});
 

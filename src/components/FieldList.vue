@@ -17,7 +17,7 @@
 
     <!-- 新增按鈕 -->
     <div class="menu_button" @click="addField">
-      <i class="fa-solid fa-plus"></i> 新增欄位
+      <i class="fa-solid fa-plus"></i> {{t`新增欄位`}}
     </div>
   </div>
 </template>
@@ -26,6 +26,9 @@
 import type { Field } from '@/type/settings';
 import Sortable from 'sortablejs';
 import FieldItem from './FieldItem.vue';
+import { useI18nStore } from '@/store/i18n';
+
+const { t } = useI18nStore();
 
 // 通過 props 接收初始數據
 const props = defineProps<{

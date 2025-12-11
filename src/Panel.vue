@@ -2,7 +2,7 @@
   <div class="status-tracking-settings">
     <div class="inline-drawer">
       <div class="inline-drawer-toggle inline-drawer-header">
-        <b>{{ t`Status Tracking` }}</b>
+        <b>{{ t`狀態追蹤` }}</b>
         <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
       </div>
       <div class="inline-drawer-content">
@@ -34,9 +34,11 @@
 </template>
 
 <script setup lang="ts">
+import { useI18nStore } from '@/store/i18n';
 import { useSettingsStore } from '@/store/settings';
 
 const { settings } = storeToRefs(useSettingsStore());
+const { t } = useI18nStore();
 </script>
 
 <style scoped>

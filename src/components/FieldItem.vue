@@ -17,7 +17,7 @@
       type="text"
       class="text_pole"
       :value="field.name"
-      placeholder="欄位名稱"
+      :placeholder="t`欄位名稱`"
       @input="$emit('update:name', ($event.target as HTMLInputElement).value)"
     />
 
@@ -26,25 +26,25 @@
       type="text"
       class="text_pole"
       :value="field.description"
-      placeholder="欄位說明"
+      :placeholder="t`欄位說明`"
       @input="$emit('update:description', ($event.target as HTMLInputElement).value)"
     />
     <!-- 類型選擇 -->
     <label>
-      <input 
-        type="radio" 
+      <input
+        type="radio"
         :checked="field.type === 'number'"
         @change="$emit('update:type', 'number')"
       />
-      數字
+      {{ t`數字` }}
     </label>
     <label>
-      <input 
-        type="radio" 
+      <input
+        type="radio"
         :checked="field.type === 'text'"
         @change="$emit('update:type', 'text')"
       />
-      文字
+      {{ t`文字` }}
     </label>
     <!-- 刪除按鈕 -->
     <div class="menu_button" @click="$emit('delete')">
@@ -55,6 +55,9 @@
 
 <script setup lang="ts">
 import type { Field } from '@/type/settings';
+import { useI18nStore } from '@/store/i18n';
+
+const { t } = useI18nStore();
 
 // Props（接收資料）
 defineProps<{
