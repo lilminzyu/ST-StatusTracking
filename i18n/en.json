@@ -15,5 +15,9 @@
   "欄位名稱": "Field Name",
   "欄位說明": "Description",
   "數字": "Number",
-  "文字": "Text"
+  "文字": "Text",
+  "進度條顏色": "Progress Bar Colors",
+  "低值顏色": "Low Value Color",
+  "高值顏色": "High Value Color",
+  "預覽": "Preview"
 }

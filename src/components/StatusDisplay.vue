@@ -70,15 +70,34 @@
         <!-- 狀態顯示區 -->
         <div class="status-list">
           <!-- 動態顯示用戶設定的欄位 -->
-          <div 
-            v-for="field in enabledFields" 
+          <div
+            v-for="field in enabledFields"
             :key="field.id"
             class="status-item"
           >
             <span class="status-name">{{ field.name }}</span>
-              <div class="status-value">
-              <span class="value-text">{{ statusData.data.customFields[field.id] || '—' }}</span>
+
+            <!-- 數字類型：顯示進度條 -->
+            <div v-if="field.type === 'number'" class="status-value">
+              <div
+                class="progress-bar-container"
+                :style="{
+                  '--progress-low-color': settings.progress_color_low,
+                  '--progress-high-color': settings.progress_color_high
+                }"
+              >
+                <div
+                  class="progress-bar-fill"
+                  :style="{ width: getProgressPercentage(field.id) + '%' }"
+                ></div>
+                <span class="progress-text">{{ statusData.data.customFields[field.id] ?? '—' }}</span>
               </div>
+            </div>
+
+            <!-- 文字類型：純文字顯示 -->
+            <div v-else class="status-value">
+              <span class="value-text">{{ statusData.data.customFields[field.id] || '—' }}</span>
+            </div>
           </div>
 
           <!-- 如果沒有啟用的欄位，顯示提示 -->
@@ -136,6 +155,21 @@ const enabledFields = computed(() => {
     .filter(f => f.enabled)
     .sort((a, b) => a.order - b.order);
 });
+
+// 計算進度條百分比（假設數字範圍是 0-100）
+function getProgressPercentage(fieldId: string): number {
+  const value = statusData.data.customFields[fieldId];
+
+  if (value === undefined || value === null) return 0;
+
+  // 轉換為數字
+  const numValue = typeof value === 'number' ? value : Number(value);
+
+  if (isNaN(numValue)) return 0;
+
+  // 限制在 0-100 範圍內
+  return Math.max(0, Math.min(100, numValue));
+}
 
 function toggleCollapse() {
   settings.value.panel_collapsed = !settings.value.panel_collapsed;
@@ -221,6 +255,8 @@ async function openPanelSettings() {
     const updated = instance.getData();
     settings.value.panel_position = updated.panel_position;
     settings.value.language = updated.language;
+    settings.value.progress_color_low = updated.progress_color_low;
+    settings.value.progress_color_high = updated.progress_color_high;
   }
 
   settingsApp.unmount();
@@ -380,11 +416,12 @@ async function openPanelSettings() {
   
   /* 項目分隔線：只顯示底部邊框 */
   border-bottom: 1px solid var(--SmartThemeBorderColor);
-  
-  /* 網格佈局：讓名稱和數值分兩列，自動對齊 */
-  display: grid;
-  grid-template-columns: 1fr auto; /* 左邊佔滿空間，右邊數值自動寬度 */
+
+  /* 水平佈局：名稱固定寬度，內容佔剩餘空間 */
+  display: flex;
+  flex-direction: row;
   align-items: center;
+  gap: 15px;
 }
 
 /* 移除最後一個 status-item 的底部分隔線 */
@@ -392,25 +429,67 @@ async function openPanelSettings() {
   border-bottom: none;
 }
 
-/* 狀態名稱 */
+/* 狀態名稱：固定寬度 */
 .status-name {
-  margin-bottom: 0; /* 移除原有的下邊距 */
-  font-weight: 600; /* 加粗 */
+  margin-bottom: 0;
+  font-weight: 600;
   font-size: 15px;
   color: var(--SmartThemeBodyColor);
-  /* 新增：為名稱旁邊的省略號留空間 */
+  min-width: 80px;
+  max-width: 120px;
+  flex-shrink: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* 狀態內容：佔滿剩餘空間 */
 .status-value {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  min-width: 0;
 }
 
-/* 進度條 */
+/* 進度條容器 */
+.progress-bar-container {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* 進度條填充 */
+.progress-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--progress-low-color, #d8b4a0), var(--progress-high-color, #a0b4d8));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 進度條文字 */
+.progress-text {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  color: var(--SmartThemeBodyColor);
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+/* 舊的進度條樣式（保留以防其他地方使用） */
 .progress-bar {
   flex: 1;
   height: 20px;
@@ -423,13 +502,6 @@ async function openPanelSettings() {
   height: 100%;
   background: linear-gradient(90deg, #4ade80, #22c55e);
   transition: width 0.3s ease;
-}
-
-.progress-text {
-  min-width: 60px;
-  text-align: right;
-  color: var(--SmartThemeBodyColor);
-  font-size: 14px;
 }
 
 /* 提示訊息 (如果沒有欄位) */

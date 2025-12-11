@@ -27,6 +27,8 @@ export const Settings = z
     panel_collapsed: z.boolean().default(false),
     fields: z.array(FieldSchema).default([]),
     language: z.enum(['zh-TW', 'en']).default('zh-TW'),
+    progress_color_low: z.string().default('#d8b4a0'),  // 莫蘭迪粉
+    progress_color_high: z.string().default('#a0b4d8'), // 莫蘭迪藍
   })
   .prefault({});
 
