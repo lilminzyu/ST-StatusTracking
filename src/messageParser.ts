@@ -1,4 +1,5 @@
 import type { Field } from '@/type/settings';
+import type { NumberFieldValue } from '@/store/statusData';
 import { eventSource, event_types } from '@sillytavern/script';
 import { getContext } from '@sillytavern/scripts/extensions';
 import { parse as parseYAML } from 'yaml';
@@ -46,7 +47,7 @@ export function processStatusData(
   location: string;
   weather: string;
   news: { title: string; content: string };
-  customFields: Record<string, string | number>;
+  customFields: Record<string, string | number | NumberFieldValue>;
 } {
   // 固定欄位（優先使用英文 key，中文作為備用以保持向後兼容）
   const fixedData = {
@@ -60,7 +61,7 @@ export function processStatusData(
   };
 
   // 動態欄位：根據用戶設定的欄位名稱來匹配
-  const customFields: Record<string, string | number> = {};
+  const customFields: Record<string, string | number | NumberFieldValue> = {};
 
   for (const field of fields) {
     if (!field.enabled) continue; // 只處理啟用的欄位
@@ -69,8 +70,21 @@ export function processStatusData(
     if (fieldName && rawData[fieldName] !== undefined) {
       // 根據欄位類型轉換資料
       if (field.type === 'number') {
-        const numValue = Number(rawData[fieldName]);
-        customFields[field.id] = isNaN(numValue) ? rawData[fieldName] : numValue;
+        const rawValue = String(rawData[fieldName]).trim();
+        const cleanValue = rawValue.replace(/%$/, ''); // 移除結尾的 % 用於計算
+        const numValue = Number(cleanValue);
+
+        logger.log(`[messageParser] Field: ${fieldName}, raw: "${rawValue}", clean: "${cleanValue}", number: ${numValue}, isNaN: ${isNaN(numValue)}`);
+
+        // 如果成功轉換為數字，存儲數值和原始顯示文字
+        if (!isNaN(numValue)) {
+          customFields[field.id] = {
+            value: numValue,      // 用於進度條計算
+            display: rawValue     // 用於顯示（保留 %）
+          };
+        } else {
+          customFields[field.id] = rawData[fieldName];
+        }
       } else {
         customFields[field.id] = String(rawData[fieldName]);
       }

@@ -36,9 +36,14 @@
           />
         </div>
 
-        <!-- 新增按鈕 -->
-        <div class="menu_button" @click="addField">
-          <i class="fa-solid fa-plus"></i> {{t`新增欄位`}}
+        <!-- 按鈕區 -->
+        <div class="field-actions">
+          <div class="menu_button" @click="addField">
+            <i class="fa-solid fa-plus"></i> {{t`新增欄位`}}
+          </div>
+          <div class="menu_button" @click="resetToDefault">
+            <i class="fa-solid fa-rotate-left"></i> {{t`恢復預設`}}
+          </div>
         </div>
       </div>
     </div>
@@ -133,6 +138,28 @@ function deleteField(id: string) {
     tempFields.value.splice(index, 1);
     tempFields.value.forEach((f, i) => f.order = i);
   }
+}
+
+// 恢復預設欄位
+function resetToDefault() {
+  tempFields.value = [
+    {
+      id: generateUUID(),
+      enabled: true,
+      name: '好感度',
+      description: '<char>目前對<user>的好感度,最低為0最高為100, 純數字',
+      order: 0,
+      type: 'number' as const,
+    },
+    {
+      id: generateUUID(),
+      enabled: true,
+      name: '內心話',
+      description: '<char>當前內心第一人稱想法, 100字內',
+      order: 1,
+      type: 'text' as const,
+    },
+  ];
 }
 
 // 返回修改後的數據

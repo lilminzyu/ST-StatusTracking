@@ -1,4 +1,4 @@
-name: Auto Build and Deploy to Main
+name: Auto Build and Deploy
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      # ========== 2. 檢查是否需要發布 ==========
+      # ========== 2. 檢查是否需要發布到 main ==========
       - name: Check for release tag in commit message
         id: autotag_check
         shell: bash
@@ -147,11 +147,48 @@ jobs:
           git tag ${{ steps.autotag.outputs.new-tag }}
           git push origin ${{ steps.autotag.outputs.new-tag }}
 
-      # ========== 9. 顯示結果 ==========
+      # ========== 9. 部署到 testing 分支（每次都執行）==========
+      - name: Deploy to testing branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # 取得當前 commit 資訊
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
+
+          # 暫存打包好的文件
+          mkdir -p /tmp/testing-deploy
+          cp -r dist/ /tmp/testing-deploy/
+          cp manifest.json /tmp/testing-deploy/
+          cp -r i18n/ /tmp/testing-deploy/ 2>/dev/null || true
+          cp README.md /tmp/testing-deploy/ 2>/dev/null || true
+          cp LICENSE /tmp/testing-deploy/ 2>/dev/null || true
+
+          # 切換到 testing 分支（如果不存在則創建）
+          git fetch origin testing:testing 2>/dev/null || git checkout --orphan testing
+          git checkout -f testing
+
+          # 清空 testing 分支的所有內容（但保留 .git 目錄）
+          find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
+
+          # 複製文件到 testing 分支
+          cp -r /tmp/testing-deploy/* .
+
+          # 提交到 testing 分支
+          git add .
+          git commit -m "Testing build from ${COMMIT_SHA}: ${COMMIT_MSG}" || echo "No changes to commit"
+
+          # 推送到 testing 分支
+          git push origin testing --force
+
+      # ========== 10. 顯示結果 ==========
       - name: Summary
         run: |
           if [ "${{ steps.autotag_check.outputs.should_tag }}" == "true" ]; then
             echo "✅ Released version ${{ steps.autotag.outputs.new-tag }} to main branch"
+            echo "✅ Also deployed to testing branch"
           else
-            echo "✅ Build successful, but not deployed (no [release] tag in commit message)"
+            echo "✅ Build successful and deployed to testing branch"
+            echo "ℹ️  Not deployed to main (no [release] tag in commit message)"
           fi

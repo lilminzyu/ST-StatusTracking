@@ -1,3 +1,9 @@
+// 數字欄位的值類型：包含數值和顯示文字
+export type NumberFieldValue = {
+  value: number;      // 用於進度條計算
+  display: string;    // 用於顯示（保留 % 等符號）
+};
+
 export const useStatusDataStore = defineStore('statusData', () => {
   const data = ref({
     date: '',
@@ -7,7 +13,7 @@ export const useStatusDataStore = defineStore('statusData', () => {
       title: '',
       content: '',
     },
-    customFields: {} as Record<string, number | string>
+    customFields: {} as Record<string, number | string | NumberFieldValue>
   });
 
   // 清空所有狀態資料

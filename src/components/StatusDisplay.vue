@@ -90,7 +90,7 @@
                   class="progress-bar-fill"
                   :style="{ width: getProgressPercentage(field.id) + '%' }"
                 ></div>
-                <span class="progress-text">{{ statusData.data.customFields[field.id] ?? '—' }}</span>
+                <span class="progress-text">{{ getDisplayText(field.id) }}</span>
               </div>
             </div>
 
@@ -162,13 +162,34 @@ function getProgressPercentage(fieldId: string): number {
 
   if (value === undefined || value === null) return 0;
 
-  // 轉換為數字
-  const numValue = typeof value === 'number' ? value : Number(value);
+  // 如果是 NumberFieldValue 物件，使用 value 屬性
+  let numValue: number;
+  if (typeof value === 'object' && 'value' in value) {
+    numValue = value.value;
+  } else if (typeof value === 'number') {
+    numValue = value;
+  } else {
+    numValue = Number(value);
+  }
 
   if (isNaN(numValue)) return 0;
 
   // 限制在 0-100 範圍內
   return Math.max(0, Math.min(100, numValue));
+}
+
+// 取得顯示文字
+function getDisplayText(fieldId: string): string {
+  const value = statusData.data.customFields[fieldId];
+
+  if (value === undefined || value === null) return '—';
+
+  // 如果是 NumberFieldValue 物件，使用 display 屬性
+  if (typeof value === 'object' && 'display' in value) {
+    return value.display;
+  }
+
+  return String(value);
 }
 
 function toggleCollapse() {
