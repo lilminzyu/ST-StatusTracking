@@ -27,6 +27,7 @@ import { useI18nStore } from '@/store/i18n';
 import type { Field } from '@/type/settings';
 import Sortable from 'sortablejs';
 import FieldItem from './FieldItem.vue';
+import { generateUUID } from '@/utils/uuid';
 
 const { t } = useI18nStore();
 
@@ -70,7 +71,7 @@ const sortedFields = computed(() => {
 // 新增
 function addField() {
   const newField: Field = {
-    id: crypto.randomUUID(),
+    id: generateUUID(),
     enabled: true,
     name: '',
     description: '',
