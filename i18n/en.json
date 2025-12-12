@@ -33,5 +33,7 @@
   "恢復預設": "Restore Defaults",
   "儲存": "Save",
   "一般設定": "General Settings",
-  "Prompt 設定": "Prompt Settings"
+  "Prompt 設定": "Prompt Settings",
+  "固定欄位設定": "Fixed Fields Settings",
+  "自訂欄位設定": "Custom Fields Settings"
 }

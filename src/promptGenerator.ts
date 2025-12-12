@@ -1,4 +1,4 @@
-import type { Field } from '@/type/settings';
+import type { Field, FixedFieldsEnabled } from '@/type/settings';
 import { logger } from '@/utils/logger';
 import { eventSource, event_types, extension_prompt_roles, extension_prompt_types, setExtensionPrompt } from '@sillytavern/script';
 
@@ -29,6 +29,7 @@ export const DEFAULT_PROMPT_EN = {
  */
 export function buildFixedPrompt(
   language: 'zh-TW' | 'en',
+  fixedFieldsEnabled: FixedFieldsEnabled,
   customPrompt?: {
     time?: string;
     place?: string;
@@ -44,26 +45,44 @@ export function buildFixedPrompt(
     ? 'Status Bar:\nAfter all text, you must generate the following code block status bar:\n**Must be different from the previous round and output in English**'
     : '狀態欄:\n在 所有文字 結束之後必須生成以下代碼塊(含)狀態欄:\n**與上一輪不允許相同, 並且使用中文輸出**';
 
+  // 根據開關決定要輸出哪些欄位
+  const lines: string[] = [];
+
+  if (fixedFieldsEnabled.time) {
+    lines.push(`time: \${${prompt.time || defaultPrompt.time}}`);
+  }
+  if (fixedFieldsEnabled.place) {
+    lines.push(`place: \${${prompt.place || defaultPrompt.place}}`);
+  }
+  if (fixedFieldsEnabled.weather) {
+    lines.push(`weather: \${${prompt.weather || defaultPrompt.weather}}`);
+  }
+  if (fixedFieldsEnabled.news) {
+    lines.push(`news:\n  title: \${${prompt.newsTitle || defaultPrompt.newsTitle}}\n  content: \${${prompt.newsContent || defaultPrompt.newsContent}}`);
+  }
+
   return `${header}
 \`\`\`myst
-time: \${${prompt.time || defaultPrompt.time}}
-place: \${${prompt.place || defaultPrompt.place}}
-weather: \${${prompt.weather || defaultPrompt.weather}}
-news:
-  title: \${${prompt.newsTitle || defaultPrompt.newsTitle}}
-  content: \${${prompt.newsContent || defaultPrompt.newsContent}}`;
+${lines.join('\n')}`;
 }
 
 /**
  * 生成狀態欄 prompt
  * @param fields 用戶自訂的欄位列表
  * @param language 語言
+ * @param fixedFieldsEnabled 固定欄位開關
  * @param customPrompt 自訂的 prompt（可選）
  * @returns 完整的 prompt 字串
  */
 export function generateStatusPrompt(
   fields: Field[],
   language: 'zh-TW' | 'en' = 'zh-TW',
+  fixedFieldsEnabled: FixedFieldsEnabled = {
+    time: true,
+    place: true,
+    weather: true,
+    news: true,
+  },
   customPrompt?: {
     time?: string;
     place?: string;
@@ -72,7 +91,7 @@ export function generateStatusPrompt(
     newsContent?: string;
   }
 ): string {
-  const fixedPrompt = buildFixedPrompt(language, customPrompt);
+  const fixedPrompt = buildFixedPrompt(language, fixedFieldsEnabled, customPrompt);
 
   // 動態欄位 prompt
   const dynamicPrompt = fields
@@ -98,6 +117,12 @@ export function generateStatusPrompt(
 // 儲存當前的配置
 let currentFields: Field[] = [];
 let currentLanguage: 'zh-TW' | 'en' = 'zh-TW';
+let currentFixedFieldsEnabled: FixedFieldsEnabled = {
+  time: true,
+  place: true,
+  weather: true,
+  news: true,
+};
 let currentCustomPrompt: {
   time?: string;
   place?: string;
@@ -111,11 +136,18 @@ let isEnabled = false;
  * 啟用狀態欄 prompt 注入
  * @param fields 用戶自訂的欄位列表
  * @param language 語言
+ * @param fixedFieldsEnabled 固定欄位開關
  * @param customPrompt 自訂 prompt
  */
 export function enablePromptInjection(
   fields: Field[],
   language: 'zh-TW' | 'en' = 'zh-TW',
+  fixedFieldsEnabled: FixedFieldsEnabled = {
+    time: true,
+    place: true,
+    weather: true,
+    news: true,
+  },
   customPrompt?: {
     time?: string;
     place?: string;
@@ -126,6 +158,7 @@ export function enablePromptInjection(
 ): void {
   currentFields = fields;
   currentLanguage = language;
+  currentFixedFieldsEnabled = fixedFieldsEnabled;
   currentCustomPrompt = customPrompt;
   isEnabled = true;
   logger.log('Prompt injection enabled, fields count:', fields.length, 'language:', language);
@@ -155,10 +188,11 @@ function onGenerationStarted(): void {
     return;
   }
 
-  const prompt = generateStatusPrompt(currentFields, currentLanguage, currentCustomPrompt);
+  const prompt = generateStatusPrompt(currentFields, currentLanguage, currentFixedFieldsEnabled, currentCustomPrompt);
 
   logger.log('Injecting status prompt');
   logger.log('Language:', currentLanguage);
+  logger.log('Fixed fields enabled:', currentFixedFieldsEnabled);
   logger.log('Prompt content:', prompt);
   logger.log('Current fields count:', currentFields.length);
 

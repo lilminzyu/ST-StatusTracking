@@ -491,7 +491,8 @@
   margin-bottom: 10px;
 }
 
-.field-list-container > .menu_button {
+.field-list-container > .menu_button,
+.prompt-actions > .menu_button {
   width: 50%;
   margin: 0 auto;
 }
@@ -664,18 +665,6 @@
   line-height: 1.5;
 }
 
-.prompt-actions {
-  display: flex;
-  gap: 10px;
-  padding-top: 15px;
-  border-top: 1px solid var(--SmartThemeBorderColor);
-}
-
-.prompt-actions .menu_button {
-  flex: 1;
-  text-align: center;
-}
-
 /* PanelSettings - 分頁切換
 -------------------------------------- */
 .tabs-container {
@@ -724,4 +713,110 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* FixedFieldsSettings - 固定欄位prompt分頁
+-------------------------------------- */
+.fixed-fields-settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fixed-field-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: var(--black10a);
+  border-radius: 8px;
+  transition: opacity 0.2s ease;
+}
+
+.fixed-field-item.disabled {
+  opacity: 0.5;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.field-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.field-left-indent {
+  padding-left: 26px;
+}
+
+/* 新聞區塊特殊樣式 */
+.news-section {
+  gap: 8px;
+}
+
+.news-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--black30a);
+}
+
+.news-child-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 30px;
+  text-align: left;
+}
+
+.news-child-label {
+  min-width: 174px; /* 200px - 26px 縮排 = 174px，保持對齊 */
+  flex-shrink: 0;
+}
+
+.field-checkbox {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.field-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--SmartThemeBodyColor);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.field-textarea {
+  flex: 1;
+  max-height: 120px;
+  resize: vertical;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.field-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
 }

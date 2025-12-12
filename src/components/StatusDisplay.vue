@@ -38,22 +38,22 @@
       <!-- 固定資訊區 -->
       <div class="fixed-info-section">
         <div class="info-item">
-          <div>
+          <div v-if="settings.fixed_fields_enabled.time">
             <span class="info-icon">📅</span>
             <span class="info-text">{{ statusData.data.date }}</span>
           </div>
-          <div>
+          <div v-if="settings.fixed_fields_enabled.place">
             <span class="info-icon">📍</span>
             <span class="info-text">{{ statusData.data.location }}</span>
           </div>
-          <div>
+          <div v-if="settings.fixed_fields_enabled.weather">
             <span class="info-icon">🌤️</span>
             <span class="info-text">{{ statusData.data.weather }}</span>
           </div>
         </div>
-        
+
         <!-- 新聞區塊 -->
-        <div class="news-section">
+        <div v-if="settings.fixed_fields_enabled.news" class="news-section">
           <div class="news-section2">
             <div class="news-header">【{{t`新聞報導`}}】</div>
             <div class="news-no-header">
@@ -188,39 +188,43 @@ async function openFieldSettings() {
   // 創建內容容器
   const contentDiv = document.createElement('div');
   container.appendChild(contentDiv);
-  
+
   const fieldApp = createApp(FieldList, {
-    initialFields: settings.value.fields,  // 傳入當前數據
+    initialSettings: settings.value, // 傳入完整設定
+    initialFields: settings.value.fields,  // 傳入當前欄位數據
   });
-  
+
   const pinia = createPinia();
   fieldApp.use(pinia);
-  
+
   const i18n = {
     install: (app: any) => {
       app.config.globalProperties.t = t;
     },
   };
   fieldApp.use(i18n);
-  
+
   // 掛載到內容容器並拿到組件實例
   const instance = fieldApp.mount(contentDiv) as any;
-  
+
   // 顯示彈窗，帶確定/取消按鈕
   const popup = new Popup(container, POPUP_TYPE.TEXT, '', {
     wide: true,
     okButton: true,    // 顯示確定按鈕
     cancelButton: true, // 顯示取消按鈕
   });
-  
+
   // 等待用戶操作
   const result = await popup.show();
-  
+
   // 按確定，保存到主 store
   if (result === POPUP_RESULT.AFFIRMATIVE) {
-    settings.value.fields = instance.getData();
+    const data = instance.getData();
+    settings.value.fields = data.fields;
+    settings.value.fixed_fields_enabled = data.fixed_fields_enabled;
+    settings.value.custom_prompt = data.custom_prompt;
   }
-  
+
   // 清理
   fieldApp.unmount();
 }

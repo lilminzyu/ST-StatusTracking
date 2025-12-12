@@ -1,42 +1,79 @@
 <template>
-  <div class="field-list-container">
-    <!-- 欄位列表 -->
-    <div ref="listRef" class="field-list">
-      <FieldItem
-        v-for="field in sortedFields"
-        :key="field.id"
-        :field="field"
-        :data-id="field.id"
-        @update:enabled="updateField(field.id, 'enabled', $event)"
-        @update:name="updateField(field.id, 'name', $event)"
-        @update:description="updateField(field.id, 'description', $event)"
-        @update:type="updateField(field.id, 'type', $event)"
-        @delete="deleteField(field.id)"
-      />
+  <div class="field-list-wrapper">
+    <!-- 分頁切換 -->
+    <div class="tabs-container">
+      <div
+        class="tab-button"
+        :class="{ active: activeTab === 'custom' }"
+        @click="activeTab = 'custom'"
+      >
+        {{ t`自訂欄位設定` }}
+      </div>
+      <div
+        class="tab-button"
+        :class="{ active: activeTab === 'fixed' }"
+        @click="activeTab = 'fixed'"
+      >
+        {{ t`固定欄位設定` }}
+      </div>
     </div>
 
-    <!-- 新增按鈕 -->
-    <div class="menu_button" @click="addField">
-      <i class="fa-solid fa-plus"></i> {{t`新增欄位`}}
+    <!-- 自訂欄位設定分頁 -->
+    <div v-show="activeTab === 'custom'" class="tab-content">
+      <div class="field-list-container">
+        <!-- 欄位列表 -->
+        <div ref="listRef" class="field-list">
+          <FieldItem
+            v-for="field in sortedFields"
+            :key="field.id"
+            :field="field"
+            :data-id="field.id"
+            @update:enabled="updateField(field.id, 'enabled', $event)"
+            @update:name="updateField(field.id, 'name', $event)"
+            @update:description="updateField(field.id, 'description', $event)"
+            @update:type="updateField(field.id, 'type', $event)"
+            @delete="deleteField(field.id)"
+          />
+        </div>
+
+        <!-- 新增按鈕 -->
+        <div class="menu_button" @click="addField">
+          <i class="fa-solid fa-plus"></i> {{t`新增欄位`}}
+        </div>
+      </div>
+    </div>
+
+    <!-- 固定欄位設定分頁 -->
+    <div v-show="activeTab === 'fixed'" class="tab-content">
+      <FixedFieldsSettings
+        ref="fixedFieldsRef"
+        :initial-settings="props.initialSettings"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18nStore } from '@/store/i18n';
-import type { Field } from '@/type/settings';
+import type { Field, Settings } from '@/type/settings';
 import Sortable from 'sortablejs';
 import FieldItem from './FieldItem.vue';
+import FixedFieldsSettings from './FixedFieldsSettings.vue';
 import { generateUUID } from '@/utils/uuid';
 
 const { t } = useI18nStore();
 
 // 通過 props 接收初始數據
 const props = defineProps<{
+  initialSettings: Settings;
   initialFields: Field[];
 }>();
 
 const listRef = ref<HTMLElement>();
+const fixedFieldsRef = ref<InstanceType<typeof FixedFieldsSettings>>();
+
+// 分頁狀態（預設顯示自訂欄位）
+const activeTab = ref<'fixed' | 'custom'>('custom');
 
 // 臨時狀態
 const tempFields = ref<Field[]>([]);
@@ -45,17 +82,17 @@ const tempFields = ref<Field[]>([]);
 onMounted(() => {
   // 從 props 複製數據
   tempFields.value = klona(props.initialFields);
-  
+
   // 初始化拖曳
   if (!listRef.value) return;
-  
+
   Sortable.create(listRef.value, {
     animation: 150,
     handle: '.drag-handle',
     onEnd: (evt) => {
       const oldIndex = evt.oldIndex!;
       const newIndex = evt.newIndex!;
-      
+
       const movedField = tempFields.value.splice(oldIndex, 1)[0];
       tempFields.value.splice(newIndex, 0, movedField);
       tempFields.value.forEach((f, i) => f.order = i);
@@ -100,7 +137,13 @@ function deleteField(id: string) {
 
 // 返回修改後的數據
 function getData() {
-  return klona(tempFields.value);
+  const fixedFieldsData = fixedFieldsRef.value?.getData();
+
+  return {
+    fields: klona(tempFields.value),
+    fixed_fields_enabled: fixedFieldsData?.fixed_fields_enabled,
+    custom_prompt: fixedFieldsData?.custom_prompt,
+  };
 }
 
 // 暴露 getData 方法給外部呼叫

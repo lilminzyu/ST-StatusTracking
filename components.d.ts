@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     FieldItem: typeof import('./src/components/FieldItem.vue')['default']
     FieldList: typeof import('./src/components/FieldList.vue')['default']
+    FixedFieldsSettings: typeof import('./src/components/FixedFieldsSettings.vue')['default']
     PanelSettings: typeof import('./src/components/PanelSettings.vue')['default']
     PromptEditor: typeof import('./src/components/PromptEditor.vue')['default']
     StatusDisplay: typeof import('./src/components/StatusDisplay.vue')['default']

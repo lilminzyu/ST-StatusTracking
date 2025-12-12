@@ -40,6 +40,7 @@ $(() => {
       enablePromptInjection(
         settingsStore.settings.fields,
         settingsStore.settings.language,
+        settingsStore.settings.fixed_fields_enabled,
         settingsStore.settings.custom_prompt
       );
     } else {
@@ -47,16 +48,17 @@ $(() => {
     }
   }, { immediate: true }); // immediate: true 表示立即執行一次
 
-  // 監聽 fields, language, custom_prompt 變化，重新注入 prompt
+  // 監聽 fields, language, fixed_fields_enabled, custom_prompt 變化，重新注入 prompt
   watch(
     () => [
       settingsStore.settings.fields,
       settingsStore.settings.language,
+      settingsStore.settings.fixed_fields_enabled,
       settingsStore.settings.custom_prompt,
     ] as const,
-    ([fields, language, customPrompt]) => {
+    ([fields, language, fixedFieldsEnabled, customPrompt]) => {
       if (settingsStore.settings.panel_enabled) {
-        enablePromptInjection(fields, language, customPrompt);
+        enablePromptInjection(fields, language, fixedFieldsEnabled, customPrompt);
       }
     },
     { deep: true } // deep: true 表示深度監聽
