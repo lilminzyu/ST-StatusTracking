@@ -1,3 +1,5 @@
+import { generateUUID } from '@/utils/uuid';
+
 // 1. 先定義 type（用來給其他地方 import）
 export type Field = {
   id: string;
@@ -45,7 +47,7 @@ export const Settings = z
     fields: z.array(FieldSchema).default([
       // 預設自訂欄位
       {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         enabled: true,
         name: '好感度',
         description: '<char>目前對<user>的好感度,最低為0最高為100, 純數字',
@@ -53,7 +55,7 @@ export const Settings = z
         type: 'number' as const,
       },
       {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         enabled: true,
         name: '內心話',
         description: '<char>當前內心第一人稱想法, 100字內',
