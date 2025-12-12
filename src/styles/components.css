@@ -628,3 +628,100 @@
 .link-button i {
   margin-right: 6px;
 }
+
+/* PromptEditor - Prompt 編輯器
+-------------------------------------- */
+.prompt-editor-container {
+  padding: 15px;
+  min-width: 500px;
+  max-width: 700px;
+}
+
+.prompt-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.prompt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prompt-field label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--SmartThemeBodyColor);
+}
+
+.prompt-textarea {
+  min-height: 60px;
+  resize: vertical;
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid var(--SmartThemeBorderColor);
+}
+
+.prompt-actions .menu_button {
+  flex: 1;
+  text-align: center;
+}
+
+/* PanelSettings - 分頁切換
+-------------------------------------- */
+.tabs-container {
+  display: flex;
+  gap: 0;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--SmartThemeBorderColor);
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px 20px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 500;
+  color: var(--SmartThemeBodyColor);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+  bottom: -2px;
+}
+
+.tab-button:hover {
+  background: var(--black10a);
+  color: var(--SmartThemeEmColor);
+}
+
+.tab-button.active {
+  color: var(--SmartThemeEmColor);
+  border-bottom-color: var(--SmartThemeEmColor);
+  font-weight: 600;
+}
+
+.tab-content {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -18,7 +18,16 @@ const FieldSchema = z.object({
   type: z.enum(['number', 'text']).default('number'),
 });
 
-// 3. Settings schema
+// 3. Custom Prompt schema
+const CustomPromptSchema = z.object({
+  time: z.string().optional(),
+  place: z.string().optional(),
+  weather: z.string().optional(),
+  newsTitle: z.string().optional(),
+  newsContent: z.string().optional(),
+});
+
+// 4. Settings schema
 export const Settings = z
   .object({
     button_selected: z.boolean().default(false),
@@ -30,11 +39,13 @@ export const Settings = z
     progress_color_low: z.string().default('#d8b4a0'),  // 莫蘭迪粉
     progress_color_high: z.string().default('#a0b4d8'), // 莫蘭迪藍
     debug_mode: z.boolean().default(false), // Debug 模式
+    custom_prompt: CustomPromptSchema.optional(), // 自訂 prompt
   })
   .prefault({});
 
-// 4. 從 zod schema 推導出 TypeScript type
+// 5. 從 zod schema 推導出 TypeScript type
 export type Settings = z.infer<typeof Settings>;
+export type CustomPrompt = z.infer<typeof CustomPromptSchema>;
 
-// 5. 存檔鍵名
+// 6. 存檔鍵名
 export const setting_field = 'status_tracking';

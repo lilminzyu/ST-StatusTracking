@@ -1,27 +1,79 @@
 import type { Field } from '@/type/settings';
-import { eventSource, event_types, extension_prompt_roles, extension_prompt_types, setExtensionPrompt } from '@sillytavern/script';
 import { logger } from '@/utils/logger';
+import { eventSource, event_types, extension_prompt_roles, extension_prompt_types, setExtensionPrompt } from '@sillytavern/script';
 
 /**
- * 固定欄位的 prompt 模板
+ * 預設 prompt 模板（繁體中文）
  */
-const FIXED_PROMPT_TEMPLATE = `狀態欄:
-在 所有文字 結束之後必須生成以下代碼塊(含)狀態欄:
-**與上一輪不允許相同**
+export const DEFAULT_PROMPT_ZH_TW = {
+  time: '當前時間, 格式為 yyyy年MM月dd日．星期．HH時mm分',
+  place: '當前劇情地點, 格式為 地點層1．地點層2',
+  weather: '當前劇情天日或環境溫度, 格式為 文雅形容天氣光線．溫度．天氣',
+  newsTitle: '當前電視上可能播放的新聞標題。可以是社會新聞、研究新聞、科普新聞, 需與劇情或者人物相關。帶點幽默微搞笑。',
+  newsContent: '這則新聞的內文,以新聞語氣100字以內播報。',
+};
+
+/**
+ * 預設 prompt 模板（英文）
+ */
+export const DEFAULT_PROMPT_EN = {
+  time: 'Current time, format: yyyy-MM-dd, Weekday, HH:mm',
+  place: 'Current story location, format: Location Layer 1 . Location Layer 2',
+  weather: 'Current weather or environment temperature, format: Elegant description of light . Temperature . Weather',
+  newsTitle: 'News headline that might be playing on TV. Can be social news, research news, science news, related to the plot or characters. A bit humorous and funny.',
+  newsContent: 'News content, broadcast in news tone within 100 words.',
+};
+
+/**
+ * 根據語言和自訂 prompt 生成固定欄位的 prompt 字串
+ */
+export function buildFixedPrompt(
+  language: 'zh-TW' | 'en',
+  customPrompt?: {
+    time?: string;
+    place?: string;
+    weather?: string;
+    newsTitle?: string;
+    newsContent?: string;
+  }
+): string {
+  const defaultPrompt = language === 'en' ? DEFAULT_PROMPT_EN : DEFAULT_PROMPT_ZH_TW;
+  const prompt = customPrompt || defaultPrompt;
+
+  const header = language === 'en'
+    ? 'Status Bar:\nAfter all text, you must generate the following code block status bar:\n**Must be different from the previous round and output in English**'
+    : '狀態欄:\n在 所有文字 結束之後必須生成以下代碼塊(含)狀態欄:\n**與上一輪不允許相同, 並且使用中文輸出**';
+
+  return `${header}
 \`\`\`myst
-時間: \${當前時間, 格式為 yyyy年MM月dd日．星期．HH時mm分}
-地點: \${當前劇情地點, 格式為 地點層1．地點層2}
-天氣: \${當前劇情天日或環境溫度, 格式為 文雅形容天氣光線．溫度．天氣}
-新聞:
-  標題: \${當前電視上可能播放的新聞標題。可以是社會新聞、研究新聞、科普新聞, 需與劇情或者人物相關。帶點幽默微搞笑。}
-  內文: \${這則新聞的內文,以新聞語氣100字以內播報。}`;
+time: \${${prompt.time || defaultPrompt.time}}
+place: \${${prompt.place || defaultPrompt.place}}
+weather: \${${prompt.weather || defaultPrompt.weather}}
+news:
+  title: \${${prompt.newsTitle || defaultPrompt.newsTitle}}
+  content: \${${prompt.newsContent || defaultPrompt.newsContent}}`;
+}
 
 /**
  * 生成狀態欄 prompt
  * @param fields 用戶自訂的欄位列表
+ * @param language 語言
+ * @param customPrompt 自訂的 prompt（可選）
  * @returns 完整的 prompt 字串
  */
-export function generateStatusPrompt(fields: Field[]): string {
+export function generateStatusPrompt(
+  fields: Field[],
+  language: 'zh-TW' | 'en' = 'zh-TW',
+  customPrompt?: {
+    time?: string;
+    place?: string;
+    weather?: string;
+    newsTitle?: string;
+    newsContent?: string;
+  }
+): string {
+  const fixedPrompt = buildFixedPrompt(language, customPrompt);
+
   // 動態欄位 prompt
   const dynamicPrompt = fields
     .filter(f => f.enabled)
@@ -37,24 +89,46 @@ export function generateStatusPrompt(fields: Field[]): string {
 
   // 組合
   const fullPrompt = dynamicPrompt
-    ? `${FIXED_PROMPT_TEMPLATE}\n${dynamicPrompt}\n\`\`\``
-    : `${FIXED_PROMPT_TEMPLATE}\n\`\`\``;
+    ? `${fixedPrompt}\n${dynamicPrompt}\n\`\`\``
+    : `${fixedPrompt}\n\`\`\``;
 
   return fullPrompt;
 }
 
-// 儲存當前的 fields 配置
+// 儲存當前的配置
 let currentFields: Field[] = [];
+let currentLanguage: 'zh-TW' | 'en' = 'zh-TW';
+let currentCustomPrompt: {
+  time?: string;
+  place?: string;
+  weather?: string;
+  newsTitle?: string;
+  newsContent?: string;
+} | undefined = undefined;
 let isEnabled = false;
 
 /**
  * 啟用狀態欄 prompt 注入
  * @param fields 用戶自訂的欄位列表
+ * @param language 語言
+ * @param customPrompt 自訂 prompt
  */
-export function enablePromptInjection(fields: Field[]): void {
+export function enablePromptInjection(
+  fields: Field[],
+  language: 'zh-TW' | 'en' = 'zh-TW',
+  customPrompt?: {
+    time?: string;
+    place?: string;
+    weather?: string;
+    newsTitle?: string;
+    newsContent?: string;
+  }
+): void {
   currentFields = fields;
+  currentLanguage = language;
+  currentCustomPrompt = customPrompt;
   isEnabled = true;
-  logger.log('Prompt injection enabled, fields count:', fields.length);
+  logger.log('Prompt injection enabled, fields count:', fields.length, 'language:', language);
 }
 
 /**
@@ -81,9 +155,10 @@ function onGenerationStarted(): void {
     return;
   }
 
-  const prompt = generateStatusPrompt(currentFields);
+  const prompt = generateStatusPrompt(currentFields, currentLanguage, currentCustomPrompt);
 
   logger.log('Injecting status prompt');
+  logger.log('Language:', currentLanguage);
   logger.log('Prompt content:', prompt);
   logger.log('Current fields count:', currentFields.length);
 

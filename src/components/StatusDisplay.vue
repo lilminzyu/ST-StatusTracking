@@ -253,10 +253,17 @@ async function openPanelSettings() {
   const result = await popup.show();
   if (result === POPUP_RESULT.AFFIRMATIVE) {
     const updated = instance.getData();
+    console.log('[StatusDisplay] PanelSettings returned data:', updated);
+    console.log('[StatusDisplay] custom_prompt from getData:', updated.custom_prompt);
+
     settings.value.panel_position = updated.panel_position;
     settings.value.language = updated.language;
     settings.value.progress_color_low = updated.progress_color_low;
     settings.value.progress_color_high = updated.progress_color_high;
+    settings.value.custom_prompt = updated.custom_prompt;
+
+    console.log('[StatusDisplay] settings.value after update:', settings.value);
+    console.log('[StatusDisplay] settings.value.custom_prompt:', settings.value.custom_prompt);
   }
 
   settingsApp.unmount();

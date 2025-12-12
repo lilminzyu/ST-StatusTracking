@@ -27,22 +27,38 @@ $(() => {
       statusDataStore.data.news = data.news;
       statusDataStore.data.customFields = data.customFields;
     },
+    () => {
+      // 清空 statusData store
+      statusDataStore.clearData();
+    },
     () => settingsStore.settings.fields // 提供取得欄位設定的函數
   );
 
   // 監聽 panel_enabled 變化，決定是否注入 prompt
   watch(() => settingsStore.settings.panel_enabled, (enabled) => {
     if (enabled) {
-      enablePromptInjection(settingsStore.settings.fields);
+      enablePromptInjection(
+        settingsStore.settings.fields,
+        settingsStore.settings.language,
+        settingsStore.settings.custom_prompt
+      );
     } else {
       disablePromptInjection();
     }
   }, { immediate: true }); // immediate: true 表示立即執行一次
 
-  // 監聽 fields 變化，重新注入 prompt
-  watch(() => settingsStore.settings.fields, (fields) => {
-    if (settingsStore.settings.panel_enabled) {
-      enablePromptInjection(fields);
-    }
-  }, { deep: true }); // deep: true 表示深度監聽
+  // 監聽 fields, language, custom_prompt 變化，重新注入 prompt
+  watch(
+    () => [
+      settingsStore.settings.fields,
+      settingsStore.settings.language,
+      settingsStore.settings.custom_prompt,
+    ] as const,
+    ([fields, language, customPrompt]) => {
+      if (settingsStore.settings.panel_enabled) {
+        enablePromptInjection(fields, language, customPrompt);
+      }
+    },
+    { deep: true } // deep: true 表示深度監聽
+  );
 });

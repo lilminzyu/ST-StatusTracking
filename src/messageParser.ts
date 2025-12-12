@@ -48,14 +48,14 @@ export function processStatusData(
   news: { title: string; content: string };
   customFields: Record<string, string | number>;
 } {
-  // 固定欄位
+  // 固定欄位（優先使用英文 key，中文作為備用以保持向後兼容）
   const fixedData = {
-    date: rawData['時間'] || rawData['date'] || '',
-    location: rawData['地點'] || rawData['location'] || '',
-    weather: rawData['天氣'] || rawData['weather'] || '',
+    date: rawData['time'] || rawData['時間'] || rawData['date'] || '',
+    location: rawData['place'] || rawData['地點'] || rawData['location'] || '',
+    weather: rawData['weather'] || rawData['天氣'] || '',
     news: {
-      title: rawData['新聞']?.['標題'] || rawData['news']?.['title'] || '',
-      content: rawData['新聞']?.['內文'] || rawData['news']?.['content'] || '',
+      title: rawData['news']?.['title'] || rawData['新聞']?.['標題'] || '',
+      content: rawData['news']?.['content'] || rawData['新聞']?.['內文'] || '',
     },
   };
 
@@ -129,10 +129,12 @@ export function parseLatestMessage(fields: Field[]) {
 /**
  * 初始化訊息監聽器
  * @param onStatusUpdate 當狀態更新時的回調函數
+ * @param onStatusClear 當需要清空狀態時的回調函數
  * @param getFields 取得當前欄位設定的函數
  */
 export function initMessageListener(
   onStatusUpdate: (data: ReturnType<typeof processStatusData>) => void,
+  onStatusClear: () => void,
   getFields: () => Field[]
 ) {
   logger.log('Initializing message listener');
@@ -143,6 +145,10 @@ export function initMessageListener(
     const data = parseLatestMessage(fields);
     if (data) {
       onStatusUpdate(data);
+    } else {
+      // 如果沒有找到資料，清空狀態顯示
+      logger.log('No myst code block found, clearing status display');
+      onStatusClear();
     }
   };
 

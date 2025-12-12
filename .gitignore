@@ -13,6 +13,7 @@ dist/
 dist-ssr/
 *.local
 
+
 # ===== IntelliJ IDEA =====
 .idea/
 *.iml
@@ -67,3 +68,4 @@ coverage/
 # ===== 其他 =====
 .eslintcache
 *.tgz
+/refer
