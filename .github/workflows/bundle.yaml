@@ -166,8 +166,13 @@ jobs:
           cp LICENSE /tmp/testing-deploy/ 2>/dev/null || true
 
           # 切換到 testing 分支（如果不存在則創建）
-          git fetch origin testing:testing 2>/dev/null || git checkout --orphan testing
-          git checkout -f testing
+          if git fetch origin testing 2>/dev/null; then
+            # testing 分支已存在，直接切換
+            git checkout -f testing
+          else
+            # testing 分支不存在，創建孤立分支
+            git checkout --orphan testing
+          fi
 
           # 清空 testing 分支的所有內容（但保留 .git 目錄）
           find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
