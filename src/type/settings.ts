@@ -29,6 +29,7 @@ export const Settings = z
     language: z.enum(['zh-TW', 'en']).default('zh-TW'),
     progress_color_low: z.string().default('#d8b4a0'),  // 莫蘭迪粉
     progress_color_high: z.string().default('#a0b4d8'), // 莫蘭迪藍
+    debug_mode: z.boolean().default(false), // Debug 模式
   })
   .prefault({});
 

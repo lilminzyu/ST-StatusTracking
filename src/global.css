@@ -1,4 +1,9 @@
-/* vue-final-modal 樣式修正 */
+/* 元件樣式
+-------------------------------------- */
+@import './styles/components.css';
+
+/* vue-final-modal 樣式修正
+-------------------------------------- */
 .vfm__container {
   display: flex !important;
   justify-content: center !important;

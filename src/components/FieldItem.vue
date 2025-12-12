@@ -15,18 +15,18 @@
     <!-- 欄位名稱 -->
     <input
       type="text"
-      class="text_pole"
+      class="text_pole field_key"
       :value="field.name"
       :placeholder="t`欄位名稱`"
       @input="$emit('update:name', ($event.target as HTMLInputElement).value)"
     />
 
-    <!-- 欄位說明 -->
+    <!-- 給AI的欄位說明 -->
     <input
       type="text"
-      class="text_pole"
+      class="text_pole field_value"
       :value="field.description"
-      :placeholder="t`欄位說明`"
+      :placeholder="t`給AI的欄位說明`"
       @input="$emit('update:description', ($event.target as HTMLInputElement).value)"
     />
     <!-- 類型選擇 -->
@@ -54,8 +54,8 @@
 </template>
 
 <script setup lang="ts">
-import type { Field } from '@/type/settings';
 import { useI18nStore } from '@/store/i18n';
+import type { Field } from '@/type/settings';
 
 const { t } = useI18nStore();
 
@@ -73,38 +73,3 @@ defineEmits<{
   'delete': [];
 }>();
 </script>
-
-<style scoped>
-.field-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px;
-  border: 1px solid var(--SmartThemeBorderColor);
-  border-radius: 5px;
-  margin-bottom: 5px;
-}
-
-.drag-handle {
-  cursor: grab;
-  color: var(--SmartThemeBodyColor);
-  padding: 5px;
-}
-
-.drag-handle:active {
-  cursor: grabbing;
-}
-
-.field-item input[type="checkbox"] {
-  margin: 0;
-}
-
-.field-item input.text_pole {
-  flex: 1;
-}
-
-.field-item .menu_button {
-  padding: 5px 10px;
-  cursor: pointer;
-}
-</style>

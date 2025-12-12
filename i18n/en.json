@@ -1,6 +1,7 @@
 {
   "狀態追蹤": "Status Tracking",
   "啟用狀態面板": "Enable Status Panel",
+  "Debug 模式": "Debug Mode",
   "擴充設定": "Extension Settings",
   "欄位設定": "Field Settings",
   "側邊欄位置": "Panel Position",
@@ -9,15 +10,17 @@
   "語言": "Language",
   "繁體中文": "Traditional Chinese",
   "English": "English",
-  "世界的另一處...": "Elsewhere in the World...",
+  "新聞報導": "THE NEWS",
   "尚未設定欄位，請點擊下方「欄位設定」按鈕": "No fields configured. Please click the 'Field Settings' button below.",
   "新增欄位": "Add Field",
   "欄位名稱": "Field Name",
-  "欄位說明": "Description",
+  "給AI的欄位說明": "Description to AI",
   "數字": "Number",
   "文字": "Text",
   "進度條顏色": "Progress Bar Colors",
   "低值顏色": "Low Value Color",
   "高值顏色": "High Value Color",
-  "預覽": "Preview"
+  "預覽": "Preview",
+  "複製 Prompt": "Copy Prompt",
+  "Prompt 已複製到剪貼簿": "Prompt copied to clipboard"
 }

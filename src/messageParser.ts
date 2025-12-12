@@ -1,18 +1,19 @@
+import type { Field } from '@/type/settings';
 import { eventSource, event_types } from '@sillytavern/script';
 import { getContext } from '@sillytavern/scripts/extensions';
 import { parse as parseYAML } from 'yaml';
-import type { Field } from '@/type/settings';
+import { logger } from '@/utils/logger';
 
 /**
- * 從訊息文字中解析 ```mingyu 代碼框
+ * 從訊息文字中解析 ```myst 代碼框
  * @param messageText 訊息文字
  * @returns 解析後的資料物件，如果沒有找到則返回 null
  */
 export function parseMinguCodeBlock(messageText: string): Record<string, any> | null {
   if (!messageText) return null;
 
-  // 尋找 ```mingyu 開頭的代碼框
-  const codeBlockRegex = /```mingyu\s*\n([\s\S]*?)```/;
+  // 尋找 ```myst 開頭的代碼框
+  const codeBlockRegex = /```myst\s*\n([\s\S]*?)```/;
   const match = messageText.match(codeBlockRegex);
 
   if (!match) return null;
@@ -22,11 +23,11 @@ export function parseMinguCodeBlock(messageText: string): Record<string, any> | 
   try {
     // 嘗試解析為 YAML
     const data = parseYAML(codeContent);
-    console.log('[ST-StatusTracking] 成功解析 mingyu 代碼框:', data);
+    logger.log('Successfully parsed myst code block:', data);
     return data;
   } catch (error) {
-    console.error('[ST-StatusTracking] 解析 mingyu 代碼框失敗:', error);
-    console.error('[ST-StatusTracking] 原始內容:', codeContent);
+    logger.error('Failed to parse myst code block:', error);
+    logger.error('Raw content:', codeContent);
     return null;
   }
 }
@@ -76,7 +77,7 @@ export function processStatusData(
     }
   }
 
-  console.log('[ST-StatusTracking] 處理後的資料:', { ...fixedData, customFields });
+  logger.log('Processed status data:', { ...fixedData, customFields });
 
   return {
     ...fixedData,
@@ -109,14 +110,14 @@ function getLatestAIMessage(): any | null {
 export function parseLatestMessage(fields: Field[]) {
   const message = getLatestAIMessage();
   if (!message) {
-    console.log('[ST-StatusTracking] 沒有找到 AI 訊息');
+    logger.log('No AI message found');
     return null;
   }
 
   // 取得當前 swipe 的訊息內容
   const messageText = message.swipes?.[message.swipe_id] || message.mes;
 
-  console.log('[ST-StatusTracking] 分析訊息:', messageText.substring(0, 100) + '...');
+  logger.log('Analyzing message:', messageText.substring(0, 100) + '...');
 
   const rawData = parseMinguCodeBlock(messageText);
   if (!rawData) return null;
@@ -134,7 +135,7 @@ export function initMessageListener(
   onStatusUpdate: (data: ReturnType<typeof processStatusData>) => void,
   getFields: () => Field[]
 ) {
-  console.log('[ST-StatusTracking] 初始化訊息監聽器');
+  logger.log('Initializing message listener');
 
   // 統一的處理函數
   const handleMessageUpdate = () => {
@@ -147,25 +148,25 @@ export function initMessageListener(
 
   // 監聽 AI 訊息接收
   eventSource.on(event_types.MESSAGE_RECEIVED, () => {
-    console.log('[ST-StatusTracking] MESSAGE_RECEIVED');
+    logger.log('MESSAGE_RECEIVED event');
     handleMessageUpdate();
   });
 
   // 監聽訊息 swipe
   eventSource.on(event_types.MESSAGE_SWIPED, (messageId: number) => {
-    console.log('[ST-StatusTracking] MESSAGE_SWIPED:', messageId);
+    logger.log('MESSAGE_SWIPED event, messageId:', messageId);
     handleMessageUpdate();
   });
 
   // 監聽訊息編輯
   eventSource.on(event_types.MESSAGE_EDITED, (messageId: number) => {
-    console.log('[ST-StatusTracking] MESSAGE_EDITED:', messageId);
+    logger.log('MESSAGE_EDITED event, messageId:', messageId);
     handleMessageUpdate();
   });
 
   // 監聽聊天切換（包含新建聊天）
   eventSource.on(event_types.CHAT_CHANGED, () => {
-    console.log('[ST-StatusTracking] CHAT_CHANGED');
+    logger.log('CHAT_CHANGED event');
     handleMessageUpdate();
   });
 

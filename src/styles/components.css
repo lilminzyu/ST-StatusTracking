@@ -1,0 +1,630 @@
+/* StatusDisplay - 主面板容器
+-------------------------------------- */
+.status-panel {
+  height: 100%;
+  z-index: 1000 !important;
+  display: flex;
+  transition: width 0.3s ease, left 0.3s ease, right 0.3s ease;
+  overflow: visible;
+}
+
+/* StatusDisplay - 面板位置
+-------------------------------------- */
+.status-panel.left {
+  left: 0;
+  width: calc((100vw - var(--sheldWidth)) / 2);
+  padding: 0px;
+}
+
+.status-panel.right {
+  right: 0;
+  width: calc((100vw - var(--sheldWidth)) / 2);
+  padding: 0px;
+}
+
+/* StatusDisplay - 收合狀態
+-------------------------------------- */
+.status-panel.collapsed {
+  width: 0px !important;
+  min-width: 0px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.status-panel.collapsed .panel-content {
+  display: none;
+}
+
+/* StatusDisplay - 收合按鈕
+-------------------------------------- */
+.collapse-toggle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  transition: background 0.2s, opacity 0.2s;
+  z-index: 10;
+  color: var(--SmartThemeBodyColor);
+}
+
+/* 右側面板的按鈕 */
+.collapse-toggle.right {
+  left: -15px;
+  border-left: 1px solid var(--SmartThemeBorderColor);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+}
+
+/* 右側 + 收合 */
+.collapse-toggle.right.collapsed {
+  left: auto;
+  right: 100%;
+  border-left: 1px solid var(--SmartThemeBorderColor);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+}
+
+/* 左側面板的按鈕 */
+.collapse-toggle.left {
+  right: -15px;
+  border-right: 1px solid var(--SmartThemeBorderColor);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}
+
+/* 左側 + 收合 */
+.collapse-toggle.left.collapsed {
+  right: auto;
+  left: 100%;
+  border-right: 1px solid var(--SmartThemeBorderColor);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+}
+
+/* StatusDisplay - 面板內容
+-------------------------------------- */
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px 15px;
+  background: var(--SmartThemeBlurTintColor);
+}
+
+/* StatusDisplay - 面板標題
+-------------------------------------- */
+.panel-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--SmartThemeBorderColor);
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--SmartThemeBodyColor);
+  text-align: center;
+}
+
+/* StatusDisplay - 固定資訊區
+-------------------------------------- */
+.fixed-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 10px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.info-item > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.info-text {
+  color: var(--SmartThemeBodyColor);
+  font-size: 14px;
+  line-height: 1.4;
+  word-break: break-word;
+  text-align: center;
+  flex: 1;
+}
+
+/* StatusDisplay - 新聞區
+-------------------------------------- */
+.news-section {
+  padding: 15px;
+  background: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.news-section2 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.news-header {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--SmartThemeBodyColor);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.news-no-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.news-divider {
+  height: 1px;
+  background: var(--SmartThemeBorderColor);
+}
+
+.news-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--SmartThemeBodyColor);
+  line-height: 1.5;
+  padding: 5px 0;
+}
+
+.news-content {
+  font-size: 13px;
+  color: var(--SmartThemeQuoteColor);
+  line-height: 1.6;
+  text-align: justify;
+  padding: 5px 0;
+}
+
+/* StatusDisplay - 自訂欄位區
+-------------------------------------- */
+.custom-fields-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  padding: 0 10px;
+}
+
+.status-list {
+  background: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+}
+
+.status-item {
+  padding: 10px 0px;
+  background: transparent;
+  border-radius: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.status-list .status-item:last-child {
+  border-bottom: none;
+}
+
+.status-name {
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--SmartThemeBodyColor);
+  min-width: 80px;
+  max-width: 120px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status-value {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.value-text {
+  color: var(--SmartThemeBodyColor);
+}
+
+.empty-hint {
+  padding: 20px;
+  text-align: center;
+  color: var(--SmartThemeQuoteColor);
+  font-style: italic;
+}
+
+/* StatusDisplay - 進度條
+-------------------------------------- */
+.progress-bar-container {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--progress-low-color, #d8b4a0), var(--progress-high-color, #a0b4d8));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.progress-text {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  color: var(--SmartThemeBodyColor);
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+/* StatusDisplay - 按鈕區
+-------------------------------------- */
+.panel-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--SmartThemeBorderColor);
+}
+
+.panel-actions .menu_button {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+}
+
+.panel-actions .menu_button i {
+ padding-right: 5px;
+}
+
+/* PanelSettings - 設定面板容器
+-------------------------------------- */
+.panel-settings-container {
+  padding: 15px;
+  min-width: 400px;
+}
+
+.settings-title {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--SmartThemeBodyColor);
+  border-bottom: 1px solid var(--SmartThemeBorderColor);
+  padding-bottom: 10px;
+}
+
+/* PanelSettings - 設定項目
+-------------------------------------- */
+.setting-item {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-item.gal-settings {
+  flex-direction: row;
+
+}
+
+.setting-label {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--SmartThemeBodyColor);
+  width:25%;
+}
+
+.setting-select {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--SmartThemeBodyColor);
+  background-color: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  width: 75%;
+}
+
+.setting-select:hover {
+  border-color: var(--SmartThemeQuoteColor);
+}
+
+.setting-select:focus {
+  outline: none;
+  border-color: var(--SmartThemeQuoteColor);
+}
+
+/* PanelSettings - 顏色選擇器
+-------------------------------------- */
+.color-picker-group {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.color-picker-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.color-picker-item label {
+  font-size: 13px;
+  color: var(--SmartThemeBodyColor);
+}
+
+.color-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: var(--SmartThemeBlurTintColor);
+}
+
+.color-input:hover {
+  border-color: var(--SmartThemeQuoteColor);
+}
+
+.color-value {
+  font-size: 12px;
+  color: var(--SmartThemeQuoteColor);
+  font-family: monospace;
+  text-align: center;
+}
+
+/* PanelSettings - 進度條預覽
+-------------------------------------- */
+.progress-preview {
+  padding: 15px;
+  background: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 4px;
+}
+
+.preview-label {
+  font-size: 13px;
+  color: var(--SmartThemeBodyColor);
+  margin-bottom: 10px;
+}
+
+.preview-bar-container {
+  position: relative;
+  width: 100%;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.preview-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--progress-low-color, #d8b4a0), var(--progress-high-color, #a0b4d8));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.preview-bar-text {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+  color: var(--SmartThemeBodyColor);
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+/* FieldList - 欄位列表容器
+-------------------------------------- */
+.field-list-container {
+  padding: 10px;
+}
+
+.field-list {
+  margin-bottom: 10px;
+}
+
+.field-list-container > .menu_button {
+  width: 50%;
+  margin: 0 auto;
+}
+
+/* FieldItem - 欄位項目
+-------------------------------------- */
+.field-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 4px;
+}
+
+.drag-handle {
+  cursor: grab;
+  color: var(--SmartThemeQuoteColor);
+  font-size: 16px;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.field-toggle {
+  cursor: pointer;
+}
+
+.field-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.field-name-input,
+.field-desc-input {
+  flex: 1;
+}
+
+.field-type-select {
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.text_pole {
+  padding: 6px 10px;
+  font-size: 14px;
+  color: var(--SmartThemeBodyColor);
+  background-color: var(--SmartThemeBlurTintColor);
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 4px;
+}
+
+.text_pole:focus {
+  outline: none;
+  border-color: var(--SmartThemeQuoteColor);
+}
+
+.field_key {
+  width:25%;
+}
+
+.field-delete {
+  cursor: pointer;
+  color: #ef4444;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+.field-delete:hover {
+  color: #dc2626;
+}
+
+/* Panel - 主設定面板
+-------------------------------------- */
+.status-tracking-settings {
+  /* 繼承 SillyTavern 樣式 */
+}
+
+/* Panel - 開關區域 */
+.toggles-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-item input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.toggle-item label {
+  cursor: pointer;
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* Panel - 連結區域 */
+.links-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.link-button {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+}
+
+.link-button:hover {
+  opacity: 0.8;
+}
+
+.link-button i {
+  margin-right: 6px;
+}

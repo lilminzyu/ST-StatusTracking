@@ -23,10 +23,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18nStore } from '@/store/i18n';
 import type { Field } from '@/type/settings';
 import Sortable from 'sortablejs';
 import FieldItem from './FieldItem.vue';
-import { useI18nStore } from '@/store/i18n';
 
 const { t } = useI18nStore();
 
@@ -107,18 +107,3 @@ defineExpose({
   getData,
 });
 </script>
-
-<style scoped>
-.field-list-container {
-  padding: 10px;
-}
-
-.field-list {
-  margin-bottom: 10px;
-}
-
-.menu_button {
-  width: 100%;
-  text-align: center;
-}
-</style>

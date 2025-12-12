@@ -2,6 +2,7 @@ import '@/global.css';
 import { initPanel } from '@/panel';
 import { initStatusPanel } from '@/statusPanel';
 import { initMessageListener } from '@/messageParser';
+import { initPromptInjection, enablePromptInjection, disablePromptInjection } from '@/promptGenerator';
 import { useSettingsStore } from '@/store/settings';
 import { useStatusDataStore } from '@/store/statusData';
 
@@ -13,21 +14,35 @@ $(() => {
   const settingsStore = useSettingsStore();
   const statusDataStore = useStatusDataStore();
 
+  // 初始化 Prompt 注入系統
+  initPromptInjection();
+
   // 初始化訊息監聽器
   initMessageListener(
     (data) => {
-      console.log('[ST-StatusTracking] 收到狀態資料:', data);
-
       // 更新 statusData store
       statusDataStore.data.date = data.date;
       statusDataStore.data.location = data.location;
       statusDataStore.data.weather = data.weather;
       statusDataStore.data.news = data.news;
       statusDataStore.data.customFields = data.customFields;
-
-      console.log('[ST-StatusTracking] statusData 已更新');
     },
     () => settingsStore.settings.fields // 提供取得欄位設定的函數
   );
+
+  // 監聽 panel_enabled 變化，決定是否注入 prompt
+  watch(() => settingsStore.settings.panel_enabled, (enabled) => {
+    if (enabled) {
+      enablePromptInjection(settingsStore.settings.fields);
+    } else {
+      disablePromptInjection();
+    }
+  }, { immediate: true }); // immediate: true 表示立即執行一次
+
+  // 監聽 fields 變化，重新注入 prompt
+  watch(() => settingsStore.settings.fields, (fields) => {
+    if (settingsStore.settings.panel_enabled) {
+      enablePromptInjection(fields);
+    }
+  }, { deep: true }); // deep: true 表示深度監聽
 });
-// test
