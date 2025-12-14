@@ -9,6 +9,7 @@
   "右側": "Right",
   "語言": "Language",
   "繁體中文": "Traditional Chinese",
+  "簡體中文": "Simplified Chinese",
   "English": "English",
   "新聞報導": "THE NEWS",
   "尚未設定欄位，請點擊下方「欄位設定」按鈕": "No fields configured. Please click the 'Field Settings' button below.",
@@ -22,5 +23,18 @@
   "高值顏色": "High Value Color",
   "預覽": "Preview",
   "複製 Prompt": "Copy Prompt",
-  "Prompt 已複製到剪貼簿": "Prompt copied to clipboard"
+  "Prompt 已複製到剪貼簿": "Prompt copied to clipboard",
+  "編輯 Prompt": "Edit Prompts",
+  "編輯固定欄位 Prompt": "Edit Fixed Field Prompts",
+  "時間": "Time",
+  "地點": "Location",
+  "天氣": "Weather",
+  "新聞標題": "News Title",
+  "新聞內文": "News Content",
+  "恢復預設": "Restore Defaults",
+  "儲存": "Save",
+  "一般設定": "General Settings",
+  "Prompt 設定": "Prompt Settings",
+  "固定欄位設定": "Fixed Fields Settings",
+  "自訂欄位設定": "Custom Fields Settings"
 }
