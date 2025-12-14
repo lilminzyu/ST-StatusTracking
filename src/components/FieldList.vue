@@ -61,10 +61,10 @@
 <script setup lang="ts">
 import { useI18nStore } from '@/store/i18n';
 import type { Field, Settings } from '@/type/settings';
+import { generateUUID } from '@/utils/uuid';
 import Sortable from 'sortablejs';
 import FieldItem from './FieldItem.vue';
 import FixedFieldsSettings from './FixedFieldsSettings.vue';
-import { generateUUID } from '@/utils/uuid';
 
 const { t } = useI18nStore();
 
@@ -147,7 +147,7 @@ function resetToDefault() {
       id: generateUUID(),
       enabled: true,
       name: '好感度',
-      description: '<char>目前對<user>的好感度,最低為0最高為100, 純數字',
+      description: '<char>目前對<user>的好感度, 0-100%, 每次±不可超過0.5',
       order: 0,
       type: 'number' as const,
     },
@@ -155,7 +155,7 @@ function resetToDefault() {
       id: generateUUID(),
       enabled: true,
       name: '內心話',
-      description: '<char>當前內心第一人稱想法, 100字內',
+      description: '<char>當前\'正文\'劇情內心第一人稱想法, 100字內',
       order: 1,
       type: 'text' as const,
     },

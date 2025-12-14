@@ -24,6 +24,7 @@
         class="setting-select"
       >
         <option value="zh-TW">{{ t`繁體中文` }}</option>
+        <option value="zh-CN">{{ t`簡體中文` }}</option>
         <option value="en">{{ t`English` }}</option>
       </select>
     </div>

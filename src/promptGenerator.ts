@@ -7,10 +7,21 @@ import { eventSource, event_types, extension_prompt_roles, extension_prompt_type
  */
 export const DEFAULT_PROMPT_ZH_TW = {
   time: '當前時間, 格式為 yyyy年MM月dd日．星期．HH時mm分',
-  place: '當前劇情地點, 格式為 地點層1．地點層2',
-  weather: '當前劇情天日或環境溫度, 格式為 文雅形容天氣光線．溫度．天氣',
-  newsTitle: '當前電視上可能播放的新聞標題。可以是社會新聞、研究新聞、科普新聞, 強制必需與劇情或者人物相關。帶點幽默微搞笑。',
-  newsContent: '這則新聞的內文,以新聞語氣100字以內播報。',
+  place: '當前劇情地點, 格式為 地點層1．地點層2．地點層3',
+  weather: '當前劇情天氣或環境溫度, 格式為 文雅形容天氣光線．溫度．天氣',
+  newsTitle: '當前社會上發生的事物標題。可以是科普新聞、論壇爆紅帖, 強制必需與劇情或者人物相關。帶點幽默微搞笑神經, 與上一輪不可相同類型, 每一輪都要不同類型, 請發揮想像力',
+  newsContent: '這則事物的內文,如果是新聞就以新聞語氣播報、如果是論壇就以網友網路言論語氣為主, 以此類推。100字以內',
+};
+
+/**
+ * 預設 prompt 模板（簡體中文）
+ */
+export const DEFAULT_PROMPT_ZH_CN = {
+  time: '当前时间, 格式为 yyyy年MM月dd日．星期．HH时mm分',
+  place: '当前剧情地点, 格式为 地点层1．地点层2．地点层3',
+  weather: '当前剧情天气或环境温度, 格式为 文雅形容天气光线．温度．天气',
+  newsTitle: '当前社会上发生的事物标题。可以是科普新闻、论坛爆红帖, 强制必需与剧情或者人物相关。带点幽默微搞笑神经, 与上一轮不可相同类型, 每一轮都要不同类型, 请发挥想象力',
+  newsContent: '这则事物的内文,如果是新闻就以新闻语气播报、如果是论坛就以网友网络言论语气为主, 以此类推。100字以内',
 };
 
 /**
@@ -18,17 +29,17 @@ export const DEFAULT_PROMPT_ZH_TW = {
  */
 export const DEFAULT_PROMPT_EN = {
   time: 'Current time, format: yyyy-MM-dd, Weekday, HH:mm',
-  place: 'Current story location, format: Location Layer 1 . Location Layer 2',
+  place: 'Current story location, format: Location Layer 1 . Location Layer 2 . Location Layer 3',
   weather: 'Current weather or environment temperature, format: Elegant description of light . Temperature . Weather',
-  newsTitle: 'News headline that might be playing on TV. Can be social news, research news, science news, related to the plot or characters. A bit humorous and funny.',
-  newsContent: 'News content, broadcast in news tone within 100 words.',
+  newsTitle: 'Current event headline in society. Can be science news, viral forum posts, must be related to the plot or characters. A bit humorous and funny, must be different type from previous round, each round must have different type, use your imagination',
+  newsContent: 'The content of this event, if it\'s news then broadcast in news tone, if it\'s forum then use netizen internet speech tone, and so on. Within 100 words',
 };
 
 /**
  * 根據語言和自訂 prompt 生成固定欄位的 prompt 字串
  */
 export function buildFixedPrompt(
-  language: 'zh-TW' | 'en',
+  language: 'zh-TW' | 'zh-CN' | 'en',
   fixedFieldsEnabled: FixedFieldsEnabled,
   customPrompt?: {
     time?: string;
@@ -38,12 +49,18 @@ export function buildFixedPrompt(
     newsContent?: string;
   }
 ): string {
-  const defaultPrompt = language === 'en' ? DEFAULT_PROMPT_EN : DEFAULT_PROMPT_ZH_TW;
+  const defaultPrompt = language === 'en'
+    ? DEFAULT_PROMPT_EN
+    : language === 'zh-CN'
+      ? DEFAULT_PROMPT_ZH_CN
+      : DEFAULT_PROMPT_ZH_TW;
   const prompt = customPrompt || defaultPrompt;
 
   const header = language === 'en'
     ? 'Status Bar:\nAfter all text, you must generate the following code block status bar:\n**Must be different from the previous round and output in English**'
-    : '狀態欄:\n在 所有文字 結束之後必須生成以下代碼塊(含)狀態欄:\n**與上一輪不允許相同, 並且使用中文輸出**';
+    : language === 'zh-CN'
+      ? '状态栏:\n在 所有文字 结束之后必须生成以下代码块(含)状态栏:\n**与上一轮不允许相同, 并且使用中文输出**'
+      : '狀態欄:\n在 所有文字 結束之後必須生成以下代碼塊(含)狀態欄:\n**與上一輪不允許相同, 並且使用中文輸出**';
 
   // 根據開關決定要輸出哪些欄位
   const lines: string[] = [];
@@ -76,7 +93,7 @@ ${lines.join('\n')}`;
  */
 export function generateStatusPrompt(
   fields: Field[],
-  language: 'zh-TW' | 'en' = 'zh-TW',
+  language: 'zh-TW' | 'zh-CN' | 'en' = 'zh-TW',
   fixedFieldsEnabled: FixedFieldsEnabled = {
     time: true,
     place: true,
@@ -116,7 +133,7 @@ export function generateStatusPrompt(
 
 // 儲存當前的配置
 let currentFields: Field[] = [];
-let currentLanguage: 'zh-TW' | 'en' = 'zh-TW';
+let currentLanguage: 'zh-TW' | 'zh-CN' | 'en' = 'zh-TW';
 let currentFixedFieldsEnabled: FixedFieldsEnabled = {
   time: true,
   place: true,
@@ -141,7 +158,7 @@ let isEnabled = false;
  */
 export function enablePromptInjection(
   fields: Field[],
-  language: 'zh-TW' | 'en' = 'zh-TW',
+  language: 'zh-TW' | 'zh-CN' | 'en' = 'zh-TW',
   fixedFieldsEnabled: FixedFieldsEnabled = {
     time: true,
     place: true,
@@ -161,7 +178,7 @@ export function enablePromptInjection(
   currentFixedFieldsEnabled = fixedFieldsEnabled;
   currentCustomPrompt = customPrompt;
   isEnabled = true;
-  logger.log('Prompt injection enabled, fields count:', fields.length, 'language:', language);
+  logger.log('[promptGenerator] 啟用 Prompt 注入');
 }
 
 /**
@@ -169,7 +186,7 @@ export function enablePromptInjection(
  */
 export function disablePromptInjection(): void {
   isEnabled = false;
-  logger.log('Prompt injection disabled');
+  logger.log('[promptGenerator] 停用 Prompt 注入');
 
   // 清除所有注入的 prompt
   setExtensionPrompt('status-tracking-prompt', '', extension_prompt_types.IN_CHAT, 0, false);
@@ -179,22 +196,13 @@ export function disablePromptInjection(): void {
  * 在每次生成開始時注入 prompt（由 GENERATION_STARTED 事件觸發）
  */
 function onGenerationStarted(): void {
-  logger.log('GENERATION_STARTED event triggered, isEnabled:', isEnabled);
-
   if (!isEnabled) {
-    // 如果未啟用，確保清除任何殘留的 prompt
-    logger.log('Injection disabled, clearing prompt');
     setExtensionPrompt('status-tracking-prompt', '', extension_prompt_types.IN_CHAT, 0, false);
     return;
   }
 
   const prompt = generateStatusPrompt(currentFields, currentLanguage, currentFixedFieldsEnabled, currentCustomPrompt);
-
-  logger.log('Injecting status prompt');
-  logger.log('Language:', currentLanguage);
-  logger.log('Fixed fields enabled:', currentFixedFieldsEnabled);
-  logger.log('Prompt content:', prompt);
-  logger.log('Current fields count:', currentFields.length);
+  logger.log('[promptGenerator] 注入 Prompt 到對話');
 
   // 注入 prompt 到深度 0（最後一條訊息之後）
   setExtensionPrompt(
@@ -205,18 +213,14 @@ function onGenerationStarted(): void {
     false,                               // 不參與 world info 掃描
     extension_prompt_roles.SYSTEM       // SYSTEM 角色
   );
-
-  logger.log('Prompt injection completed');
 }
 
 /**
  * 初始化 prompt 注入系統
  */
 export function initPromptInjection(): void {
-  logger.log('Initializing prompt injection system');
+  logger.log('[promptGenerator] 初始化 Prompt 注入系統');
 
   // 監聽生成開始事件
   eventSource.on(event_types.GENERATION_STARTED, onGenerationStarted);
-
-  logger.log('GENERATION_STARTED event listener registered');
 }

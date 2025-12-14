@@ -50,7 +50,7 @@ export const Settings = z
         id: generateUUID(),
         enabled: true,
         name: '好感度',
-        description: '<char>目前對<user>的好感度,最低為0最高為100, 純數字',
+        description: '<char>目前對<user>的好感度, 0-100%, 每次±不可超過0.5',
         order: 0,
         type: 'number' as const,
       },
@@ -58,12 +58,12 @@ export const Settings = z
         id: generateUUID(),
         enabled: true,
         name: '內心話',
-        description: '<char>當前內心第一人稱想法, 100字內',
+        description: '<char>當前\'正文\'劇情內心第一人稱想法, 100字內',
         order: 1,
         type: 'text' as const,
       },
     ]),
-    language: z.enum(['zh-TW', 'en']).default('zh-TW'),
+    language: z.enum(['zh-TW', 'zh-CN', 'en']).default('zh-TW'),
     progress_color_low: z.string().default('#d8b4a0'),  // 莫蘭迪粉
     progress_color_high: z.string().default('#a0b4d8'), // 莫蘭迪藍
     debug_mode: z.boolean().default(false), // Debug 模式

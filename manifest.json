@@ -10,6 +10,8 @@
   "homePage": "https://github.com/lilminzyu/ST-StatusTracking",
   "auto_update": true,
   "i18n": {
-    "en": "i18n/en.json"
+    "en": "i18n/en.json",
+    "zh-tw": "i18n/zh-TW.json",
+    "zh-cn": "i18n/zh-CN.json"
   }
 }

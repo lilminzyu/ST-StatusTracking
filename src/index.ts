@@ -3,12 +3,17 @@ import { initPanel } from '@/panel';
 import { initStatusPanel } from '@/statusPanel';
 import { initMessageListener } from '@/messageParser';
 import { initPromptInjection, enablePromptInjection, disablePromptInjection } from '@/promptGenerator';
+import { initMessageRenderer } from '@/messageRenderer';
 import { useSettingsStore } from '@/store/settings';
 import { useStatusDataStore } from '@/store/statusData';
+import { logger } from '@/utils/logger';
 
 $(() => {
+  logger.log('[index] 擴充開始初始化');
+
   initPanel();
   initStatusPanel();
+  initMessageRenderer();
 
   // 取得 store 實例
   const settingsStore = useSettingsStore();
@@ -17,9 +22,12 @@ $(() => {
   // 初始化 Prompt 注入系統
   initPromptInjection();
 
+  logger.log('[index] 擴充初始化完成');
+
   // 初始化訊息監聽器
   initMessageListener(
     (data) => {
+      logger.log('[index] 收到狀態更新');
       // 更新 statusData store
       statusDataStore.data.date = data.date;
       statusDataStore.data.location = data.location;
@@ -28,6 +36,7 @@ $(() => {
       statusDataStore.data.customFields = data.customFields;
     },
     () => {
+      logger.log('[index] 清空狀態資料');
       // 清空 statusData store
       statusDataStore.clearData();
     },

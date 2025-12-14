@@ -130,6 +130,7 @@ import { useStatusDataStore } from '@/store/statusData';
 import { Popup, POPUP_RESULT, POPUP_TYPE } from '@sillytavern/scripts/popup';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
+import { logger } from '@/utils/logger';
 
 const { settings } = storeToRefs(useSettingsStore());
 const statusData = useStatusDataStore();
@@ -193,10 +194,12 @@ function getDisplayText(fieldId: string): string {
 }
 
 function toggleCollapse() {
+  logger.log('[StatusDisplay] 使用者點擊收合按鈕');
   settings.value.panel_collapsed = !settings.value.panel_collapsed;
 }
 
 async function openFieldSettings() {
+  logger.log('[StatusDisplay] 使用者點擊欄位設定按鈕');
 
   // 創建標題
   const title = document.createElement('h3');
@@ -240,10 +243,13 @@ async function openFieldSettings() {
 
   // 按確定，保存到主 store
   if (result === POPUP_RESULT.AFFIRMATIVE) {
+    logger.log('[StatusDisplay] 使用者確認儲存欄位設定');
     const data = instance.getData();
     settings.value.fields = data.fields;
     settings.value.fixed_fields_enabled = data.fixed_fields_enabled;
     settings.value.custom_prompt = data.custom_prompt;
+  } else {
+    logger.log('[StatusDisplay] 使用者取消欄位設定');
   }
 
   // 清理
@@ -251,6 +257,7 @@ async function openFieldSettings() {
 }
 
 async function openPanelSettings() {
+  logger.log('[StatusDisplay] 使用者點擊擴充設定按鈕');
   const container = document.createElement('div');
 
   const settingsApp = createApp(PanelSettings, {
@@ -277,18 +284,16 @@ async function openPanelSettings() {
 
   const result = await popup.show();
   if (result === POPUP_RESULT.AFFIRMATIVE) {
+    logger.log('[StatusDisplay] 使用者確認儲存擴充設定');
     const updated = instance.getData();
-    console.log('[StatusDisplay] PanelSettings returned data:', updated);
-    console.log('[StatusDisplay] custom_prompt from getData:', updated.custom_prompt);
 
     settings.value.panel_position = updated.panel_position;
     settings.value.language = updated.language;
     settings.value.progress_color_low = updated.progress_color_low;
     settings.value.progress_color_high = updated.progress_color_high;
     settings.value.custom_prompt = updated.custom_prompt;
-
-    console.log('[StatusDisplay] settings.value after update:', settings.value);
-    console.log('[StatusDisplay] settings.value.custom_prompt:', settings.value.custom_prompt);
+  } else {
+    logger.log('[StatusDisplay] 使用者取消擴充設定');
   }
 
   settingsApp.unmount();

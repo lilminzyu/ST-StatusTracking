@@ -24,11 +24,10 @@ export function parseMinguCodeBlock(messageText: string): Record<string, any> | 
   try {
     // 嘗試解析為 YAML
     const data = parseYAML(codeContent);
-    logger.log('Successfully parsed myst code block:', data);
+    logger.log('[messageParser] 成功解析 myst 代碼塊');
     return data;
   } catch (error) {
-    logger.error('Failed to parse myst code block:', error);
-    logger.error('Raw content:', codeContent);
+    logger.error('[messageParser] 解析 myst 代碼塊失敗:', error);
     return null;
   }
 }
@@ -74,7 +73,6 @@ export function processStatusData(
         const cleanValue = rawValue.replace(/%$/, ''); // 移除結尾的 % 用於計算
         const numValue = Number(cleanValue);
 
-        logger.log(`[messageParser] Field: ${fieldName}, raw: "${rawValue}", clean: "${cleanValue}", number: ${numValue}, isNaN: ${isNaN(numValue)}`);
 
         // 如果成功轉換為數字，存儲數值和原始顯示文字
         if (!isNaN(numValue)) {
@@ -91,7 +89,6 @@ export function processStatusData(
     }
   }
 
-  logger.log('Processed status data:', { ...fixedData, customFields });
 
   return {
     ...fixedData,
@@ -124,14 +121,11 @@ function getLatestAIMessage(): any | null {
 export function parseLatestMessage(fields: Field[]) {
   const message = getLatestAIMessage();
   if (!message) {
-    logger.log('No AI message found');
     return null;
   }
 
   // 取得當前 swipe 的訊息內容
   const messageText = message.swipes?.[message.swipe_id] || message.mes;
-
-  logger.log('Analyzing message:', messageText.substring(0, 100) + '...');
 
   const rawData = parseMinguCodeBlock(messageText);
   if (!rawData) return null;
@@ -151,7 +145,7 @@ export function initMessageListener(
   onStatusClear: () => void,
   getFields: () => Field[]
 ) {
-  logger.log('Initializing message listener');
+  logger.log('[messageParser] 初始化訊息監聽器');
 
   // 統一的處理函數
   const handleMessageUpdate = () => {
@@ -160,33 +154,37 @@ export function initMessageListener(
     if (data) {
       onStatusUpdate(data);
     } else {
-      // 如果沒有找到資料，清空狀態顯示
-      logger.log('No myst code block found, clearing status display');
       onStatusClear();
     }
   };
 
   // 監聽 AI 訊息接收
   eventSource.on(event_types.MESSAGE_RECEIVED, () => {
-    logger.log('MESSAGE_RECEIVED event');
+    logger.log('[messageParser] 收到 AI 訊息');
     handleMessageUpdate();
   });
 
   // 監聽訊息 swipe
-  eventSource.on(event_types.MESSAGE_SWIPED, (messageId: number) => {
-    logger.log('MESSAGE_SWIPED event, messageId:', messageId);
+  eventSource.on(event_types.MESSAGE_SWIPED, () => {
+    logger.log('[messageParser] 訊息已 swipe');
     handleMessageUpdate();
   });
 
   // 監聽訊息編輯
-  eventSource.on(event_types.MESSAGE_EDITED, (messageId: number) => {
-    logger.log('MESSAGE_EDITED event, messageId:', messageId);
+  eventSource.on(event_types.MESSAGE_EDITED, () => {
+    logger.log('[messageParser] 訊息已編輯');
     handleMessageUpdate();
   });
 
   // 監聽聊天切換（包含新建聊天）
   eventSource.on(event_types.CHAT_CHANGED, () => {
-    logger.log('CHAT_CHANGED event');
+    logger.log('[messageParser] 聊天已切換');
+    handleMessageUpdate();
+  });
+
+  // 監聽訊息刪除
+  eventSource.on(event_types.MESSAGE_DELETED, () => {
+    logger.log('[messageParser] 訊息已刪除');
     handleMessageUpdate();
   });
 
