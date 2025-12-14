@@ -97,7 +97,18 @@ jobs:
       - name: Build
         run: pnpm build
 
-      # ========== 6. 提交版本號更新到 dev（僅在 release 時）==========
+      # ========== 6. 暫存打包文件（每次都執行）==========
+      - name: Save build artifacts
+        run: |
+          # 暫存打包好的文件
+          mkdir -p /tmp/deploy
+          cp -r dist/ /tmp/deploy/
+          cp manifest.json /tmp/deploy/
+          cp -r i18n/ /tmp/deploy/ 2>/dev/null || true
+          cp README.md /tmp/deploy/ 2>/dev/null || true
+          cp LICENSE /tmp/deploy/ 2>/dev/null || true
+
+      # ========== 7. 提交版本號更新到 dev（僅在 release 時）==========
       - name: Commit version bump to dev
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         run: |
@@ -107,39 +118,31 @@ jobs:
           git commit -m "[bot] Bump version to ${{ steps.autotag.outputs.new-tag }}" || true
           git push origin dev
 
-      # ========== 7. 部署到 main 分支（僅在 release 時）==========
+      # ========== 8. 部署到 main 分支（僅在 release 時）==========
       - name: Deploy to main branch
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # 暫存打包好的文件
-          mkdir -p /tmp/deploy
-          cp -r dist/ /tmp/deploy/
-          cp manifest.json /tmp/deploy/
-          cp -r i18n/ /tmp/deploy/ 2>/dev/null || true
-          cp README.md /tmp/deploy/ 2>/dev/null || true
-          cp LICENSE /tmp/deploy/ 2>/dev/null || true
-          
+
           # 切換到 main 分支（強制切換）
           git fetch origin main:main 2>/dev/null || git checkout --orphan main
           git checkout -f main
-          
+
           # 清空 main 分支的所有內容（但保留 .git 目錄）
           find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
-          
+
           # 複製文件到 main 分支
           cp -r /tmp/deploy/* .
-          
+
           # 提交到 main 分支
           git add .
           git commit -m "Release ${{ steps.autotag.outputs.new-tag }}" || echo "No changes to commit"
-          
+
           # 推送到 main 分支
           git push origin main --force
 
-      # ========== 8. 創建 Git Tag（僅在 release 時）==========
+      # ========== 9. 創建 Git Tag（僅在 release 時）==========
       - name: Create and push git tag
         if: ${{ steps.autotag_check.outputs.should_tag == 'true' }}
         run: |
@@ -147,23 +150,16 @@ jobs:
           git tag ${{ steps.autotag.outputs.new-tag }}
           git push origin ${{ steps.autotag.outputs.new-tag }}
 
-      # ========== 9. 部署到 testing 分支（每次都執行）==========
+      # ========== 10. 部署到 testing 分支（每次都執行）==========
       - name: Deploy to testing branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 取得當前 commit 資訊
+          # 取得當前 commit 資訊（在 dev 分支上）
+          git checkout dev 2>/dev/null || true
           COMMIT_SHA=$(git rev-parse --short HEAD)
           COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-
-          # 暫存打包好的文件
-          mkdir -p /tmp/testing-deploy
-          cp -r dist/ /tmp/testing-deploy/
-          cp manifest.json /tmp/testing-deploy/
-          cp -r i18n/ /tmp/testing-deploy/ 2>/dev/null || true
-          cp README.md /tmp/testing-deploy/ 2>/dev/null || true
-          cp LICENSE /tmp/testing-deploy/ 2>/dev/null || true
 
           # 切換到 testing 分支（如果不存在則創建）
           if git fetch origin testing 2>/dev/null; then
@@ -177,8 +173,8 @@ jobs:
           # 清空 testing 分支的所有內容（但保留 .git 目錄）
           find . -maxdepth 1 ! -name '.git' ! -name '.' ! -name '..' -exec rm -rf {} + 2>/dev/null || true
 
-          # 複製文件到 testing 分支
-          cp -r /tmp/testing-deploy/* .
+          # 複製文件到 testing 分支（使用之前暫存的文件）
+          cp -r /tmp/deploy/* .
 
           # 提交到 testing 分支
           git add .
@@ -187,7 +183,7 @@ jobs:
           # 推送到 testing 分支
           git push origin testing --force
 
-      # ========== 10. 顯示結果 ==========
+      # ========== 11. 顯示結果 ==========
       - name: Summary
         run: |
           if [ "${{ steps.autotag_check.outputs.should_tag }}" == "true" ]; then
