@@ -1,6 +1,6 @@
 {
   "name": "status-tracking",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scripts": {
     "build": "vite build",
     "watch": "vite build --watch --mode development",
