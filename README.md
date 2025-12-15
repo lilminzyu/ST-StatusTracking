@@ -1,109 +1,246 @@
-# Tavern Extension Template
+# ST-StatusTracking ⚠️ 測試版
 
-SillyTavern 插件模板, 但我更建议你编写[酒馆助手脚本](http://github.com/StageDog/tavern_helper_template)而非酒馆插件. 因为:
+> ⚠️ **警告：此專案目前為測試版本 (v0.3.0-beta)，功能尚未完全穩定，可能會有 bug 或功能變更。**
 
-- 酒馆助手为消息楼层、消息显示、酒馆生成请求、酒馆变量 (+ 自制的楼层级别变量)、世界书、预设、酒馆正则等均进行了封装, 虽然其他插件也能使用这些[酒馆助手接口](
-https://n0vi028.github.io/JS-Slash-Runner-Doc/guide/基本用法/开发其他插件时使用.html), 但在酒馆助手脚本内编写更方便
-- 玩家安装脚本仅需几 kb 空间, 但安装插件需要克隆整个仓库
-- 你可以利用 jsdelivr 简单做到脚本的自动更新, 不会像插件一样因为酒馆对 git 的处理问题更新失败
-- 脚本支持实时修改, 修改脚本后无须手动刷新酒馆网页即可测试更新结果
+一個為 SillyTavern 設計的擴充功能，能讓 AI 在回覆時自動更新並顯示狀態欄，包含時間、地點、天氣、新聞等固定欄位，以及可自訂的動態欄位（如好感度、內心話等）。
+
+![版本](https://img.shields.io/badge/version-0.3.0--beta-orange)
+![SillyTavern](https://img.shields.io/badge/SillyTavern-compatible-blue)
+![授權](https://img.shields.io/badge/license-Aladdin-green)
+
+## 功能特色
+
+### 核心功能
+- **智能狀態追蹤**：自動從 AI 回覆中解析並顯示狀態資訊
+- **動態狀態面板**：可隱藏的側邊欄顯示
+- **代碼塊自動隱藏**：AI 回覆中的 ```myst 代碼塊會自動隱藏，不影響對話閱讀
+- **自訂欄位**：用戶可自訂需要的欄位
+- **固定欄位可自訂**：擴充內置的固定欄位也可開關、自行編輯提示詞
+
+### 固定欄位
+- **時間**：顯示當前劇情時間
+- **地點**：階層式地點顯示
+- **天氣**：當前劇情天氣或環境溫度
+- **新聞報導**：社會事件標題與內文
+
+### 自訂欄位
+- **文字欄位**：適合顯示內心話、當前衣著狀態、動作等文字資訊
+- **數字欄位**：適合顯示好感度、體力值等數值，支援：
+  - 漸層進度條視覺化
+  - 自訂進度條顏色（低值/高值）
+- **完全自訂**：欄位名稱、描述、順序、啟用/停用都可自由設定
+- **拖曳排序**：直覺的拖曳介面調整欄位順序
+
+### 多語言支援
+- **三語支援**：繁體中文 / 簡體中文 / English
+- **自訂 Prompt**：每個固定欄位的 AI 提示詞都可以自訂並恢復預設
+
+### 進階設定
+- **面板位置選擇**：左側或右側
+- **Debug 模式**：方便開發者查看詳細 log
+- **設定同步**：所有設定自動儲存到 SillyTavern 伺服器，換裝置也能同步
+- **分頁設定介面**：一般設定 / Prompt 設定 / 固定欄位 / 自訂欄位
+
+## 安裝方式
+
+1. 開啟 SillyTavern
+2. 點擊右上角的「擴充」圖示
+3. 點擊「安裝擴充」
+4. 在 URL 欄位輸入：
+   ```
+   https://github.com/lilminzyu/ST-StatusTracking
+   ```
+5. 點擊「安裝」
+6. 重新載入 SillyTavern 頁面
 
 ## 使用方法
 
-### 部署
+### 基本設定
 
-请点击网页右上角的绿色 `Use this template` 按钮来创建一个基于这个模板的新仓库.
+1. **啟用擴充**：在 SillyTavern 擴充列表中啟用「Status Tracking」
+2. **啟用狀態面板**：點擊擴充設定中的「啟用狀態面板」開關
+3. **設定欄位**：
+   - 點擊「欄位設定」按鈕
+   - 在「固定欄位設定」標籤中選擇要啟用的固定欄位
+   - 在「自訂欄位設定」標籤中新增/編輯自訂欄位
 
-在创建仓库后, 将本仓库克隆到本地 `SillyTavern/public/scripts/extensions/third-party` 中, 这样你的酒馆就安装好了这个插件, 并且你能在仓库里开始编写代码.
+### AI Prompt 設定
 
-然后, 你需要更改 `manifest.json` 和 `package.json` 中的 `<占位符>` 为你想要的名字.
+**自訂 Prompt**：
+- 點擊「Prompt 設定」標籤
+- 點擊「編輯固定欄位 Prompt」
+- 修改每個欄位的說明文字
+- 點擊「恢復預設」可還原為預設值
 
-为了让 `.github/workflows/` 中的工作流能正常运行, 你需要在仓库 `Settings -> Actions -> General` 中将 `Workflow permissions` 设置为 `Read and write permissions`, 并勾选 `Allow GitHub Actions to create and approve pull requests`
+### 欄位設定範例
 
-### 软件要求
-
-你需要先安装有 node 22+ 和 pnpm, 可以参考[实时编写前端界面或脚本的 Cursor 环境配置](https://stagedog.github.io/青空莉/工具经验/实时编写前端界面或脚本/环境准备/). 如果已经安装有 node 22+, 则 pnpm 可以按以下步骤安装:
-
-```bash
-npm install -g pnpm
+#### 固定欄位範例
+```myst
+time: 2024年12月15日．星期日．14時30分
+place: 咖啡廳．二樓靠窗座位
+weather: 陰天微涼．18°C．細雨
+news:
+  title: 城市中心發現神秘貓咪咖啡廳，網友直呼：太療癒了！
+  content: 位於市中心的一家新開幕咖啡廳，因店內有超過20隻可愛貓咪而爆紅。許多網友在論壇上分享體驗，表示這是他們見過最放鬆的下午茶環境。店長表示所有貓咪都是領養的流浪貓。
 ```
 
-然后, 用 pnpm 安装本项目的所有依赖:
+#### 自訂欄位範例
 
-```bash
-pnpm install
+**數字欄位（好感度）**：
+- 欄位名稱：`好感度`
+- 給AI的欄位說明：`<char>對<user>當前的好感度數值, 0-100, 格式為 數字%`
+- 類型：數字
+
+AI 回應範例：
+```
+好感度: 75%
+```
+顯示效果：會顯示一個75%進度的漸層進度條
+
+**文字欄位（內心話）**：
+- 欄位名稱：`內心話`
+- 給AI的欄位說明：`<char>當前'正文'劇情內心第一人稱想法, 100字內`
+- 類型：文字
+
+AI 回應範例：
+```yaml
+內心話: 他今天看起來心情不錯，也許這是個好機會...
 ```
 
-### 访问酒馆接口
+### 進階功能
 
-相比起酒馆文档里给出的 `getContext()` 中寥寥无几的接口, 我更建议你直接能访问酒馆所有代码文件导出的接口. 为此, 模板提供了 `@sillytavern` 这一特殊导入方式, 你可以借此导入酒馆代码文件:
+**代碼塊自動隱藏**：
+- AI 回覆中的 ```myst 代碼塊會自動隱藏
+- 適用於所有場景：新訊息、swipe、編輯、聊天切換等
+- 不影響對話閱讀體驗
 
-```typescript
-import { uuidv4 } from '@sillytavern/scripts/utils';  // 导入 `SillyTavern/public/scripts/utils.js` 中的 uuidv4 函数
+## 介面說明
+
+### 狀態面板
+- **位置**：可在設定中選擇左側或右側
+
+### 設定面板
+- **一般設定**：面板位置、語言、進度條顏色、Debug 模式
+- **Prompt 設定**：固定欄位的 AI 提示詞自訂
+- **固定欄位設定**：啟用/停用時間、地點、天氣、新聞
+- **自訂欄位設定**：新增、編輯、刪除、排序自訂欄位
+
+## 開發者資訊
+
+### 技術棧
+- **Framework**: Vue 3 (Composition API)
+- **State Management**: Pinia
+- **Schema Validation**: Zod
+- **Build Tool**: Vite
+- **Styling**: CSS + TailwindCSS (可選)
+- **Language**: TypeScript
+
+### 專案結構
+
+```
+ST-StatusTracking/
+├── src/
+│   ├── components/          # Vue 元件
+│   │   ├── FieldList.vue   # 欄位列表
+│   │   └── StatusDisplay.vue # 狀態顯示
+│   ├── store/              # Pinia stores
+│   │   ├── settings.ts     # 設定管理
+│   │   ├── statusData.ts   # 狀態資料
+│   │   └── i18n.ts         # 國際化
+│   ├── type/               # TypeScript 類型定義
+│   ├── utils/              # 工具函數
+│   ├── index.ts            # 主入口
+│   ├── panel.ts            # 設定面板
+│   ├── statusPanel.ts      # 狀態面板
+│   ├── messageParser.ts    # 訊息解析
+│   ├── messageRenderer.ts  # 訊息渲染
+│   └── promptGenerator.ts  # Prompt 生成
+├── i18n/                   # 翻譯檔案
+│   ├── en.json
+│   ├── zh-TW.json
+│   └── zh-CN.json
+├── dist/                   # 打包輸出
+├── manifest.json           # 擴充清單
+└── package.json
 ```
 
-### 访问酒馆助手接口
+### CI/CD
 
-此外你可以通过 `TavernHelper` 访问酒馆助手的所有接口. 请参考[酒馆助手文档](https://n0vi028.github.io/JS-Slash-Runner-Doc/guide/基本用法/开发其他插件时使用.html)进行配置.
+專案使用 GitHub Actions 自動化流程：
 
-### i18n
+- **自動打包**：每次推送到 `dev` 分支都會自動打包
+- **自動部署**：
+  - `testing` 分支：每次推送都會更新（用於測試）
+  - `main` 分支：commit message 包含 `[release]` 時才會更新（正式版）
+- **自動版本號**：
+  - `[release major]`: 1.0.0 → 2.0.0
+  - `[release minor]`: 1.0.0 → 1.1.0
+  - `[release]` 或 `[release patch]`: 1.0.0 → 1.0.1
 
-要让插件支持英语, 你应该在界面上用 `` t`要显示的文本` `` 来显示文本, 然后在 `i18n/en.json` 中添加对应的映射.
+## 🐛 已知問題
 
-如果要支持更多语言, 则你需要在 `manifest.json` 中添加对应的语言文件映射. 具体请参考[酒馆官方文档](https://docs.sillytavern.app/for-contributors/writing-extensions/#internationalization).
+⚠️ **測試版警告**：
+- 部分邊界情況可能尚未完全測試
+- UI 在某些特殊情況下可能有顯示問題
+- 尙不支援手機版
 
-### 第三方库
+如果遇到問題，請在 [GitHub Issues](https://github.com/lilminzyu/ST-StatusTracking/issues) 回報。
 
-#### vue、pinia、zod 等
+## 更新日誌
 
-模板默认提供的是使用 vue、pinia、zod 的示例. 尤其是 `store/settings.ts` 中对 pinia 的使用大幅简化了插件配置的存取: **其他地方代码只需要任意使用 `useSettingsStore` 返回的设置, 而设置将及时保存到酒馆存档内**.
+### v0.3.0-beta (測試版)
+- ✨ 新增簡體中文語言支援
+- ✨ 新增歷史狀態記憶功能（向上遍歷找到最近的有效狀態）
+- ✨ 新增 ```myst 代碼塊自動隱藏功能
+- ✨ 新增固定欄位 Prompt 自訂功能
+- 🐛 修復訊息刪除後狀態欄不更新的問題
+- 🐛 修復擴充更新時覆蓋用戶自訂 Prompt 的問題
+- 🐛 修復簡體中文 UI 翻譯無法載入的問題
+- 🔧 優化 GitHub Actions 打包流程
 
-此外, 这里有一些 [vue、pinia、zod](https://stagedog.github.io/青空莉/工具经验/实时编写前端界面或脚本/进阶技巧/) 的使用技巧.
+### v0.2.0
+- ✨ 新增多語言支援（繁中/簡中/英文）
+- ✨ 新增固定欄位啟用/停用功能
+- ✨ 新增階層式新聞區塊
+- 🎨 優化設定介面為分頁結構
 
-#### tailwindcss
+### v0.1.0
+- 🎉 初始版本發布
+- ✨ 基本狀態追蹤功能
+- ✨ 固定欄位與自訂欄位支援
 
-本项目虽然支持了 tailwindcss, 但模板中并没有使用. 因为它的一些样式会导致酒馆网页的样式错乱. 如果你需要使用 tailwindcss, 请自行在 `src/global.css` 中添加 `@import 'tailwindcss';` 并修正其导致的样式错误.
+## 貢獻
 
-此外, 你可以调整 `eslint.config.mjs` 中对 tailwindcss 的配置; 尤其是 eslint-plugin-better-tailwindcss 与 prettier 之间的[冲突问题](https://stagedog.github.io/青空莉/工具经验/实时编写前端界面或脚本/进阶技巧/).
+歡迎提交 Issue 或 Pull Request！
 
-### 打包
+1. Fork 此專案
+2. 建立你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的變更 (`git commit -m 'feat: 新增某個很棒的功能'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 開啟一個 Pull Request
 
-酒馆只接收单个 `.js` 文件作为插件入口, 模板将其设定为 `dist/index.js`.
+## 授權
 
-你可以在本地通过 `pnpm build` 将代码打包为 `dist/index.js` 文件, 或用 `pnpm watch` 来持续监听代码变动且打包. 无论哪种方式, 插件都必须刷新酒馆网页才能使用最新代码, 因此我更建议你编写无须刷新网页的[酒馆助手脚本](http://github.com/StageDog/tavern_helper_template)而非酒馆插件.
+本專案採用 [Aladdin Free Public License](LICENSE) 授權條款。
 
-在本地编写完成后, 你无须手动进行打包来保证代码是最最新的. 模板在 `.github/workflows/bundle.yaml` 中设置了自动打包功能, 当代码被上传到仓库后, 会自动打包为最新结果.
+- ✅ 允許個人使用、安裝
+- ✅ 允許提交 Pull Request 給原作者貢獻
+- ❌ **禁止商業使用**
+- ❌ **禁止二次發布修改版本**（只能透過 PR 貢獻給原專案）
+- 📝 使用時需註明原作者
 
-### 修改版本号
+## 作者
 
-你无须手动去文件更改版本号. 模板在 `.github/workflows/bundle.yaml` 中设置了自动更改版本号的功能, 如果你提交的 commit 消息中带有 `[release]` 字样, 则版本号会自动递增. 具体地,
+**mingyu**
 
-- `[release major]`: 1.0.0 -> 2.0.0
-- `[release minor]`: 1.0.0 -> 1.1.0
-- `[release]` 或 `[release patch]`: 1.0.0 -> 1.0.1
+- GitHub: [@lilminzyu](https://github.com/lilminzyu)
+- 專案首頁: [ST-StatusTracking](https://github.com/lilminzyu/ST-StatusTracking)
 
-### 忽略冲突
+## 致謝
 
-基于酒馆 UI 插件的项目结构要求, 本项目直接打包源代码在 `dist/` 文件夹中并随仓库上传, 而这会让开发时经常出现分支冲突.
+- 感謝 [SillyTavern](https://github.com/SillyTavern/SillyTavern) 團隊提供優秀的對話平台
+- 專案模板來自 [tavern_extension_template](https://github.com/StageDog/tavern_extension_template)
 
-为了解决这一点, 仓库在 `.gitattribute` 中设置了对于 `dist/` 文件夹中的冲突总是使用当前版本. 这不会有什么问题: 在上传后, ci 会将 `dist/` 文件夹重新打包成最新版本, 因而你上传的 `dist/` 文件夹内容如何无关紧要.
+---
 
-为了启用这个功能, 请执行一次以下命令:
-
-```bash
-git config --global merge.ours.driver true
-```
-
-### 断点调试
-
-目前, windows 上的断点调试存在一定问题: 你如果在 vscode 内对 vue 文件设置断点, 则用 chrome 或 edge 进行断点调试时, 这些断点无法生效.
-
-这疑似是酒馆网页根目录下没有 vite 配置文件造成的, 我还没找到彻底的解决方法, 你可以:
-
-- 安装 Debugger for Firefox 插件和[火狐浏览器](https://www.firefox.com/en-US/channel/desktop/developer/?redirect_source=mozilla-org) (你可以安装[便携版](https://portableapps.com/apps/internet/firefox-developer-portable)然后在 VSCode 设置里指定路径为便携版), 然后使用模板里配置好的 Firefox 调试任务进行调试.
-- 在代码中用 `debugger` 触发断点.
-- 在浏览器中 f12 手动设置断点.
-
-## 许可证
-
-- [Aladdin](LICENSE)
+如果這個專案對你有幫助，請給個星星支持一下！⭐⭐⭐ 
