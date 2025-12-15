@@ -221,13 +221,10 @@ ST-StatusTracking/
 
 ## 授權
 
-本專案採用 [Aladdin Free Public License](LICENSE) 授權條款。
+本專案採用 [Aladdin Free Public License (AFPL)](LICENSE) 授權條款。
 
-- ✅ 允許個人使用、安裝
-- ✅ 允許提交 Pull Request 給原作者貢獻
-- ❌ **禁止商業使用**
-- ❌ **禁止二次發布修改版本**（只能透過 PR 貢獻給原專案）
-- 📝 使用時需註明原作者
+- ⚠️ 商業用途受到限制（詳見 LICENSE 文件）
+- 📝 使用時需註明原作者並包含授權聲明
 
 ## 作者
 
