@@ -36,5 +36,17 @@
   "一般設定": "General Settings",
   "Prompt 設定": "Prompt Settings",
   "固定欄位設定": "Fixed Fields Settings",
-  "自訂欄位設定": "Custom Fields Settings"
+  "自訂欄位設定": "Custom Fields Settings",
+  "備份與還原": "Backup & Restore",
+  "匯出所有設定（包含固定欄位、自訂欄位、Prompt、樣式等）": "Export all settings (fields, prompts, styles, etc.)",
+  "匯出備份": "Export Backup",
+  "匯入備份": "Import Backup",
+  "備份已匯出": "Backup exported",
+  "成功": "Success",
+  "匯出失敗，請檢查控制台": "Export failed. Check console.",
+  "錯誤": "Error",
+  "資料格式錯誤": "Invalid data format",
+  "匯入失敗": "Import failed",
+  "確定要匯入此備份嗎？\n這將覆蓋目前的所有設定（欄位、Prompt、樣式等）。": "Import this backup?\nThis will overwrite all current settings (fields, prompts, styles, etc.).",
+  "備份已還原，請重新開啟設定面板查看": "Backup restored. Please reopen settings to view changes."
 }
