@@ -74,6 +74,7 @@ export const Settings = z
       weather: true,
       news: true,
     }), // 固定欄位開關
+    custom_css: z.string().default(''), // 用戶自訂 CSS（為未來功能預留）
   })
   .prefault({});
 

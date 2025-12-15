@@ -832,3 +832,30 @@
   gap: 10px;
   padding-top: 10px;
 }
+
+/* PanelSettings - 備份與還原
+-------------------------------------- */
+.backup-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.backup-actions .menu_button {
+  flex-shrink: 0;
+}
+
+.backup-actions .menu_button i {
+  padding-right: 5px;
+}
+
+.backup-description {
+  font-size: 12px;
+  color: var(--SmartThemeQuoteColor);
+}
