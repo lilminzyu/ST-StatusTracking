@@ -1,9 +1,9 @@
-import type { Field } from '@/type/settings';
 import type { NumberFieldValue } from '@/store/statusData';
+import type { Field } from '@/type/settings';
+import { logger } from '@/utils/logger';
 import { eventSource, event_types } from '@sillytavern/script';
 import { getContext } from '@sillytavern/scripts/extensions';
 import { parse as parseYAML } from 'yaml';
-import { logger } from '@/utils/logger';
 
 /**
  * 從訊息文字中解析 ```myst 代碼框
@@ -97,41 +97,41 @@ export function processStatusData(
 }
 
 /**
- * 取得最新的 AI 訊息
- */
-function getLatestAIMessage(): any | null {
-  const context = getContext();
-  if (!context.chat || context.chat.length === 0) return null;
-
-  // 從後往前找第一個 AI 訊息（非使用者、非系統訊息）
-  for (let i = context.chat.length - 1; i >= 0; i--) {
-    const message = context.chat[i];
-    if (!message.is_user && !message.is_system) {
-      return message;
-    }
-  }
-
-  return null;
-}
-
-/**
- * 從最新的 AI 訊息中解析狀態資料
+ * 從歷史訊息中解析最近一則有效的狀態資料
+ * 會從最新的訊息開始向上遍歷，直到找到有效的狀態資料
  * @param fields 用戶設定的欄位列表
+ * @returns 解析後的狀態資料，如果找不到則返回 null
  */
 export function parseLatestMessage(fields: Field[]) {
-  const message = getLatestAIMessage();
-  if (!message) {
+  const context = getContext();
+  if (!context.chat || context.chat.length === 0) {
     return null;
   }
 
-  // 取得當前 swipe 的訊息內容
-  const messageText = message.swipes?.[message.swipe_id] || message.mes;
+  // 從後往前遍歷所有 AI 訊息，直到找到有效的狀態資料
+  for (let i = context.chat.length - 1; i >= 0; i--) {
+    const message = context.chat[i];
 
-  const rawData = parseMinguCodeBlock(messageText);
-  if (!rawData) return null;
+    // 跳過使用者訊息和系統訊息
+    if (message.is_user || message.is_system) {
+      continue;
+    }
 
-  // 處理並轉換資料
-  return processStatusData(rawData, fields);
+    // 取得當前 swipe 的訊息內容
+    const messageText = message.swipes?.[message.swipe_id] || message.mes;
+
+    // 嘗試解析狀態資料
+    const rawData = parseMinguCodeBlock(messageText);
+    if (rawData) {
+      // 找到有效的狀態資料，處理並返回
+      logger.log(`[messageParser] 在訊息 #${i} 找到有效的狀態資料`);
+      return processStatusData(rawData, fields);
+    }
+  }
+
+  // 遍歷完所有訊息都沒找到
+  logger.log('[messageParser] 未找到任何有效的狀態資料');
+  return null;
 }
 
 /**
