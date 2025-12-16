@@ -48,5 +48,18 @@
   "資料格式錯誤": "Invalid data format",
   "匯入失敗": "Import failed",
   "確定要匯入此備份嗎？\n這將覆蓋目前的所有設定（欄位、Prompt、樣式等）。": "Import this backup?\nThis will overwrite all current settings (fields, prompts, styles, etc.).",
-  "備份已還原，請重新開啟設定面板查看": "Backup restored. Please reopen settings to view changes."
+  "備份已還原，請重新開啟設定面板查看": "Backup restored. Please reopen settings to view changes.",
+  "自訂 CSS": "Custom CSS",
+  "匯入 CSS": "Import CSS",
+  "匯出 CSS": "Export CSS",
+  "載入範例模板": "Load Example Template",
+  "在此輸入自訂 CSS...": "Enter custom CSS here...",
+  "提示：編輯完成後點擊彈窗下方的「確定」按鈕即可套用樣式": "Tip: Click 'OK' button at the bottom of the popup to apply styles after editing",
+  "CSS 已匯出": "CSS exported",
+  "CSS 已匯入，請點擊「儲存」套用": "CSS imported. Click 'Save' to apply",
+  "載入範例模板將覆蓋當前的 CSS 內容，確定要繼續嗎？": "Loading the example template will overwrite current CSS content. Continue?",
+  "範例模板已載入": "Example template loaded",
+  "匯入所有設定": "Import All Settings",
+  "匯出所有設定": "Export All Settings",
+  "備份已還原": "Backup restored"
 }
