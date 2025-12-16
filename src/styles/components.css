@@ -336,7 +336,6 @@
 }
 
 .settings-title {
-  margin: 0 0 20px 0;
   font-size: 18px;
   font-weight: 600;
   color: var(--SmartThemeBodyColor);
@@ -354,7 +353,11 @@
   text-align: left;
 }
 
-.setting-item:last-child {
+.setting-item:first-of-type {
+  margin-top: 20px;
+}
+
+.setting-item:last-of-type {
   margin-bottom: 0;
 }
 
@@ -371,7 +374,6 @@
 }
 
 .setting-select {
-  padding: 8px 12px;
   font-size: 14px;
   color: var(--SmartThemeBodyColor);
   background-color: var(--SmartThemeBlurTintColor);
@@ -391,8 +393,39 @@
   border-color: var(--SmartThemeQuoteColor);
 }
 
-/* PanelSettings - 顏色選擇器
+/* PanelSettings - 進度條顏色
 -------------------------------------- */
+.progress-color-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  padding: 8px;
+  margin: -8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.progress-color-header:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.progress-color-toggle-icon {
+  transition: transform 0.3s;
+  color: var(--SmartThemeQuoteColor);
+  font-size: 14px;
+}
+
+.progress-color-toggle-icon.collapsed {
+  transform: rotate(-90deg);
+}
+
+.progress-color-content {
+  margin-top: 12px;
+}
+
 .color-picker-group {
   display: flex;
   gap: 20px;
@@ -431,24 +464,21 @@
   text-align: center;
 }
 
-/* PanelSettings - 進度條預覽
--------------------------------------- */
 .progress-preview {
-  padding: 15px;
-  background: var(--SmartThemeBlurTintColor);
-  border: 1px solid var(--SmartThemeBorderColor);
-  border-radius: 4px;
+  display: inline-flex;
+  width: 100%;
 }
 
 .preview-label {
   font-size: 13px;
   color: var(--SmartThemeBodyColor);
   margin-bottom: 10px;
+  width: 10%;
 }
 
 .preview-bar-container {
   position: relative;
-  width: 100%;
+  width: 90%;
   height: 16px;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -833,12 +863,90 @@
   padding-top: 10px;
 }
 
+/* PanelSettings - CSS 編輯器
+-------------------------------------- */
+.css-editor-settings {
+  border-color: var(--SmartThemeEmColor);
+  border-width: 2px;
+}
+
+.css-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  padding: 8px;
+  margin: -8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.css-editor-header:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.css-toggle-icon {
+  transition: transform 0.3s;
+  color: var(--SmartThemeQuoteColor);
+  font-size: 14px;
+}
+
+.css-toggle-icon.collapsed {
+  transform: rotate(-90deg);
+}
+
+.css-editor-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 5px;
+}
+
+.css-editor-actions .menu_button_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.css-textarea {
+  width: 100%;
+  min-height: 300px;
+  max-height: 500px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 12px;
+  border: 1px solid var(--SmartThemeBorderColor);
+  border-radius: 6px;
+  background: var(--SmartThemeBlurTintColor);
+  color: var(--SmartThemeBodyColor);
+  resize: vertical;
+  tab-size: 2;
+}
+
+.css-textarea:focus {
+  outline: 2px solid var(--SmartThemeEmColor);
+  outline-offset: 2px;
+}
+
+.css-editor-tips {
+  font-size: 12px;
+  color: var(--SmartThemeQuoteColor);
+  margin-top: 8px;
+  line-height: 1.4;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
 /* PanelSettings - 備份與還原
 -------------------------------------- */
 .backup-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 12px;
 }
 
@@ -849,6 +957,7 @@
 
 .backup-actions .menu_button {
   flex-shrink: 0;
+  font-size: 13px;
 }
 
 .backup-actions .menu_button i {
@@ -858,4 +967,6 @@
 .backup-description {
   font-size: 12px;
   color: var(--SmartThemeQuoteColor);
+  margin-top: 8px;
+  line-height: 1.4;
 }

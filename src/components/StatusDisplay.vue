@@ -292,6 +292,7 @@ async function openPanelSettings() {
     settings.value.progress_color_low = updated.progress_color_low;
     settings.value.progress_color_high = updated.progress_color_high;
     settings.value.custom_prompt = updated.custom_prompt;
+    settings.value.custom_css = updated.custom_css;
   } else {
     logger.log('[StatusDisplay] 使用者取消擴充設定');
   }

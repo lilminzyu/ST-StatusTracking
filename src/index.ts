@@ -1,11 +1,12 @@
 import '@/global.css';
-import { initPanel } from '@/panel';
-import { initStatusPanel } from '@/statusPanel';
 import { initMessageListener } from '@/messageParser';
-import { initPromptInjection, enablePromptInjection, disablePromptInjection } from '@/promptGenerator';
 import { initMessageRenderer } from '@/messageRenderer';
+import { initPanel } from '@/panel';
+import { disablePromptInjection, enablePromptInjection, initPromptInjection } from '@/promptGenerator';
+import { initStatusPanel } from '@/statusPanel';
 import { useSettingsStore } from '@/store/settings';
 import { useStatusDataStore } from '@/store/statusData';
+import { applyCustomCSS } from '@/utils/cssInjector';
 import { logger } from '@/utils/logger';
 
 $(() => {
@@ -21,6 +22,9 @@ $(() => {
 
   // 初始化 Prompt 注入系統
   initPromptInjection();
+
+  // 應用用戶自訂 CSS（如果有）
+  applyCustomCSS(settingsStore.settings.custom_css);
 
   logger.log('[index] 擴充初始化完成');
 
@@ -71,5 +75,14 @@ $(() => {
       }
     },
     { deep: true } // deep: true 表示深度監聽
+  );
+
+  // 監聽 custom_css 變化，動態應用 CSS
+  watch(
+    () => settingsStore.settings.custom_css,
+    (newCSS) => {
+      applyCustomCSS(newCSS);
+      logger.log('[index] 自訂 CSS 已更新');
+    }
   );
 });
