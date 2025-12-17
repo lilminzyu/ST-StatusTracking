@@ -52,10 +52,10 @@
           </div>
         </div>
 
-        <!-- 新聞區塊 -->
+        <!-- 新鮮事區塊 -->
         <div v-if="settings.fixed_fields_enabled.news" class="news-section">
           <div class="news-section2">
-            <div class="news-header">【{{t`新聞報導`}}】</div>
+            <div class="news-header">{{ statusData.data.news.type}}</div>
             <div class="news-no-header">
               <div class="news-divider"></div>
               <div class="news-title">{{ statusData.data.news.title }}</div>
@@ -127,10 +127,10 @@ import PanelSettings from '@/components/PanelSettings.vue';
 import { useI18nStore } from '@/store/i18n';
 import { useSettingsStore } from '@/store/settings';
 import { useStatusDataStore } from '@/store/statusData';
+import { logger } from '@/utils/logger';
 import { Popup, POPUP_RESULT, POPUP_TYPE } from '@sillytavern/scripts/popup';
 import { createPinia } from 'pinia';
 import { createApp } from 'vue';
-import { logger } from '@/utils/logger';
 
 const { settings } = storeToRefs(useSettingsStore());
 const statusData = useStatusDataStore();

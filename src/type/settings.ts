@@ -25,6 +25,7 @@ const CustomPromptSchema = z.object({
   time: z.string().optional(),
   place: z.string().optional(),
   weather: z.string().optional(),
+  newsType: z.string().optional(),
   newsTitle: z.string().optional(),
   newsContent: z.string().optional(),
 });

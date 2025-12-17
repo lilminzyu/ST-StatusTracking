@@ -64,9 +64,9 @@
         </div>
       </div>
 
-      <!-- 新聞區塊 -->
+      <!-- 新鮮事區塊 -->
       <div class="fixed-field-item" :class="{ disabled: !tempFixedFieldsEnabled.news }">
-        <!-- 新聞主控制 -->
+        <!-- 新鮮事主控制 -->
         <div class="news-header">
           <input
             id="fixed-field-news"
@@ -74,13 +74,26 @@
             type="checkbox"
             class="field-checkbox"
           />
-          <label for="fixed-field-news" class="field-name">{{ t`新聞報導` }}</label>
+          <label for="fixed-field-news" class="field-name">{{ t`新鮮事` }}</label>
         </div>
 
-        <!-- 新聞標題 -->
+        <!-- 新鮮事類型 -->
         <div class="news-child-row">
           <div class="news-child-label">
-            <label class="field-name">{{ t`新聞標題` }}</label>
+            <label class="field-name">{{ t`新鮮事類型` }} (type)</label>
+          </div>
+          <textarea
+            v-model="editablePrompt.newsType"
+            class="text_pole field-textarea"
+            :placeholder="defaultPrompt.newsType"
+            :disabled="!tempFixedFieldsEnabled.news"
+          />
+        </div>
+
+        <!-- 新鮮事標題 -->
+        <div class="news-child-row">
+          <div class="news-child-label">
+            <label class="field-name">{{ t`新鮮事標題` }} (title)</label>
           </div>
           <textarea
             v-model="editablePrompt.newsTitle"
@@ -90,10 +103,10 @@
           />
         </div>
 
-        <!-- 新聞內文 -->
+        <!-- 新鮮事內文 -->
         <div class="news-child-row">
           <div class="news-child-label">
-            <label class="field-name">{{ t`新聞內文` }} (content)</label>
+            <label class="field-name">{{ t`新鮮事內文` }} (content)</label>
           </div>
           <textarea
             v-model="editablePrompt.newsContent"
@@ -144,6 +157,7 @@ const editablePrompt = ref({
   time: '',
   place: '',
   weather: '',
+  newsType: '',
   newsTitle: '',
   newsContent: '',
 });
@@ -158,6 +172,7 @@ watch(
       time: newPrompt?.time || defaults.time,
       place: newPrompt?.place || defaults.place,
       weather: newPrompt?.weather || defaults.weather,
+      newsType: newPrompt?.newsType || defaults.newsType,
       newsTitle: newPrompt?.newsTitle || defaults.newsTitle,
       newsContent: newPrompt?.newsContent || defaults.newsContent,
     };
@@ -181,6 +196,7 @@ function restorePrompt() {
     time: defaults.time,
     place: defaults.place,
     weather: defaults.weather,
+    newsType: defaults.newsType,
     newsTitle: defaults.newsTitle,
     newsContent: defaults.newsContent,
   };
@@ -200,6 +216,9 @@ function getData() {
   }
   if (editablePrompt.value.weather?.trim() && editablePrompt.value.weather !== defaults.weather) {
     promptToSave.weather = editablePrompt.value.weather.trim();
+  }
+  if (editablePrompt.value.newsType?.trim() && editablePrompt.value.newsType !== defaults.newsType) {
+    promptToSave.newsType = editablePrompt.value.newsType.trim();
   }
   if (editablePrompt.value.newsTitle?.trim() && editablePrompt.value.newsTitle !== defaults.newsTitle) {
     promptToSave.newsTitle = editablePrompt.value.newsTitle.trim();

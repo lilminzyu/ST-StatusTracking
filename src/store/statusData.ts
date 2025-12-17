@@ -10,6 +10,7 @@ export const useStatusDataStore = defineStore('statusData', () => {
     location: '',
     weather: '',
     news: {
+      type: '',
       title: '',
       content: '',
     },
@@ -23,6 +24,7 @@ export const useStatusDataStore = defineStore('statusData', () => {
       location: '',
       weather: '',
       news: {
+        type: '',
         title: '',
         content: '',
       },

@@ -156,7 +156,7 @@
   flex: 1;
 }
 
-/* StatusDisplay - 新聞區
+/* StatusDisplay - 新鮮事區
 -------------------------------------- */
 .news-section {
   padding: 15px;
@@ -183,7 +183,6 @@
 .news-no-header {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .news-divider {
@@ -812,7 +811,7 @@
   padding-left: 26px;
 }
 
-/* 新聞區塊特殊樣式 */
+/* 新鮮事區塊特殊樣式 */
 .news-section {
   gap: 8px;
 }

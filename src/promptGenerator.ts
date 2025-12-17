@@ -9,7 +9,8 @@ export const DEFAULT_PROMPT_ZH_TW = {
   time: '當前時間, 格式為 yyyy年MM月dd日．星期．HH時mm分',
   place: '當前劇情地點, 格式為 地點層1．地點層2．地點層3',
   weather: '當前劇情天氣或環境溫度, 格式為 文雅形容天氣光線．溫度．天氣',
-  newsTitle: '當前社會上發生的事物標題。可以是科普新聞、論壇爆紅帖, 強制必需與劇情或者人物相關。帶點幽默微搞笑神經, 與上一輪不可相同類型, 每一輪都要不同類型, 請發揮想像力',
+  newsType: '當前社會上發生的事物標題類型標籤, 例如【論壇熱帖】【科普新聞】【社會話題】等, 必須用【】包起來',
+  newsTitle: '強制必需與劇情或者人物相關。帶幽默微搞笑神經, 與上一輪不可相同類型, 每一輪都要不同類型, 請發揮想像力',
   newsContent: '這則事物的內文,如果是新聞就以新聞語氣播報、如果是論壇就以網友網路言論語氣為主, 以此類推。100字以內',
 };
 
@@ -20,7 +21,8 @@ export const DEFAULT_PROMPT_ZH_CN = {
   time: '当前时间, 格式为 yyyy年MM月dd日．星期．HH时mm分',
   place: '当前剧情地点, 格式为 地点层1．地点层2．地点层3',
   weather: '当前剧情天气或环境温度, 格式为 文雅形容天气光线．温度．天气',
-  newsTitle: '当前社会上发生的事物标题。可以是科普新闻、论坛爆红帖, 强制必需与剧情或者人物相关。带点幽默微搞笑神经, 与上一轮不可相同类型, 每一轮都要不同类型, 请发挥想象力',
+  newsType: '当前社会上发生的事物标题类型标签, 例如【论坛热帖】【科普新闻】【社会话题】等, 必须用【】包起来',
+  newsTitle: '强制必需与剧情或者人物相关。带幽默微搞笑神经, 与上一轮不可相同类型, 每一轮都要不同类型, 请发挥想象力',
   newsContent: '这则事物的内文,如果是新闻就以新闻语气播报、如果是论坛就以网友网络言论语气为主, 以此类推。100字以内',
 };
 
@@ -31,7 +33,8 @@ export const DEFAULT_PROMPT_EN = {
   time: 'Current time, format: yyyy-MM-dd, Weekday, HH:mm',
   place: 'Current story location, format: Location Layer 1 . Location Layer 2 . Location Layer 3',
   weather: 'Current weather or environment temperature, format: Elegant description of light . Temperature . Weather',
-  newsTitle: 'Current event headline in society. Can be science news, viral forum posts, must be related to the plot or characters. A bit humorous and funny, must be different type from previous round, each round must have different type, use your imagination',
+  newsType: 'Current event type label in society, e.g. [Forum Hot Post] [Science News] [Social Topic] etc., must be wrapped in []',
+  newsTitle: 'Must be related to the plot or characters. Bring humorous and funny vibes, must be different type from previous round, each round must have different type, use your imagination',
   newsContent: 'The content of this event, if it\'s news then broadcast in news tone, if it\'s forum then use netizen internet speech tone, and so on. Within 100 words',
 };
 
@@ -45,6 +48,7 @@ export function buildFixedPrompt(
     time?: string;
     place?: string;
     weather?: string;
+    newsType?: string;
     newsTitle?: string;
     newsContent?: string;
   }
@@ -75,7 +79,7 @@ export function buildFixedPrompt(
     lines.push(`weather: \${${prompt.weather || defaultPrompt.weather}}`);
   }
   if (fixedFieldsEnabled.news) {
-    lines.push(`news:\n  title: \${${prompt.newsTitle || defaultPrompt.newsTitle}}\n  content: \${${prompt.newsContent || defaultPrompt.newsContent}}`);
+    lines.push(`news:\n  type: \${${prompt.newsType || defaultPrompt.newsType}}\n  title: \${${prompt.newsTitle || defaultPrompt.newsTitle}}\n  content: \${${prompt.newsContent || defaultPrompt.newsContent}}`);
   }
 
   return `${header}
@@ -104,6 +108,7 @@ export function generateStatusPrompt(
     time?: string;
     place?: string;
     weather?: string;
+    newsType?: string;
     newsTitle?: string;
     newsContent?: string;
   }
@@ -144,6 +149,7 @@ let currentCustomPrompt: {
   time?: string;
   place?: string;
   weather?: string;
+  newsType?: string;
   newsTitle?: string;
   newsContent?: string;
 } | undefined = undefined;
@@ -169,6 +175,7 @@ export function enablePromptInjection(
     time?: string;
     place?: string;
     weather?: string;
+    newsType?: string;
     newsTitle?: string;
     newsContent?: string;
   }

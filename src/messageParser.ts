@@ -19,7 +19,22 @@ export function parseMinguCodeBlock(messageText: string): Record<string, any> | 
 
   if (!match) return null;
 
-  const codeContent = match[1].trim();
+  let codeContent = match[1].trim();
+
+  // 預處理 YAML：修復常見的格式問題
+  // 1. 處理未引用的星號開頭的值 (例如: key: *value* 會被 YAML 當作錨點)
+  // 2. 處理冒號開頭的值 (例如: key: :value 會造成解析錯誤)
+  codeContent = codeContent.replace(
+    /^(\s*)([^:\s]+)\s*:\s*([*:：].*)$/gm,
+    (match, indent, key, value) => {
+      // 如果值已經有引號，跳過
+      if (value.trim().startsWith('"') || value.trim().startsWith("'")) {
+        return match;
+      }
+      // 自動加上雙引號
+      return `${indent}${key}: "${value.trim()}"`;
+    }
+  );
 
   try {
     // 嘗試解析為 YAML
@@ -45,7 +60,7 @@ export function processStatusData(
   date: string;
   location: string;
   weather: string;
-  news: { title: string; content: string };
+  news: { type: string; title: string; content: string };
   customFields: Record<string, string | number | NumberFieldValue>;
 } {
   // 固定欄位（優先使用英文 key，中文作為備用以保持向後兼容）
@@ -54,8 +69,9 @@ export function processStatusData(
     location: rawData['place'] || rawData['地點'] || rawData['location'] || '',
     weather: rawData['weather'] || rawData['天氣'] || '',
     news: {
-      title: rawData['news']?.['title'] || rawData['新聞']?.['標題'] || '',
-      content: rawData['news']?.['content'] || rawData['新聞']?.['內文'] || '',
+      type: rawData['news']?.['type'] || rawData['新鮮事']?.['類型'] || '',
+      title: rawData['news']?.['title'] || rawData['新鮮事']?.['標題'] || '',
+      content: rawData['news']?.['content'] || rawData['新鮮事']?.['內文'] || '',
     },
   };
 

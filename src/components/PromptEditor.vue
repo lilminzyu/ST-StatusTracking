@@ -31,7 +31,7 @@
       </div>
 
       <div class="prompt-field">
-        <label>{{ t`新聞標題` }} (news.title):</label>
+        <label>{{ t`新鮮事標題` }} (news.title):</label>
         <textarea
           v-model="localPrompt.newsTitle"
           class="text_pole prompt-textarea"
@@ -40,7 +40,7 @@
       </div>
 
       <div class="prompt-field">
-        <label>{{ t`新聞內文` }} (news.content):</label>
+        <label>{{ t`新鮮事內文` }} (news.content):</label>
         <textarea
           v-model="localPrompt.newsContent"
           class="text_pole prompt-textarea"
@@ -61,10 +61,10 @@
 </template>
 
 <script setup lang="ts">
+import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_ZH_TW } from '@/promptGenerator';
 import { useI18nStore } from '@/store/i18n';
 import { useSettingsStore } from '@/store/settings';
 import type { CustomPrompt } from '@/type/settings';
-import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_ZH_TW } from '@/promptGenerator';
 
 const { t } = useI18nStore();
 const settingsStore = useSettingsStore();
