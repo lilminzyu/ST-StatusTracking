@@ -978,3 +978,520 @@
   color: var(--SmartThemeQuoteColor);
   line-height: 0;
 }
+
+/* ==================================================
+   Mobile Responsive Design
+   ================================================== */
+
+/* 平板尺寸 (寬度 <= 1024px) */
+@media screen and (max-width: 1024px) {
+  /* PanelSettings - 減少最小寬度 */
+  .panel-settings-container {
+    min-width: 350px;
+  }
+
+  .prompt-editor-container {
+    min-width: 400px;
+    max-width: 600px;
+  }
+
+  /* 調整欄位間距 */
+  .setting-item {
+    margin-bottom: 15px;
+  }
+}
+
+/* 手機橫屏 (寬度 <= 767px) */
+@media screen and (max-width: 767px) {
+  /* StatusDisplay - 調整面板寬度 */
+  .status-panel.left,
+  .status-panel.right {
+    width: 280px;
+  }
+
+  /* StatusDisplay - 減少內邊距 */
+  .panel-content {
+    padding: 15px 10px;
+    overflow-y: inherit;
+  }
+
+  .fixed-info-section {
+    gap: 12px;
+    padding: 0 5px;
+  }
+
+  .info-item {
+    padding: 12px;
+  }
+
+  /* StatusDisplay - 調整字體大小 */
+  .panel-header h3 {
+    font-size: 18px;
+  }
+
+  .info-text {
+    font-size: 13px;
+  }
+
+  .news-header {
+    font-size: 15px;
+  }
+
+  .news-title {
+    font-size: 13px;
+  }
+
+  .news-content {
+    font-size: 12px;
+  }
+
+  .status-name {
+    font-size: 14px;
+    min-width: 70px;
+    max-width: 100px;
+  }
+
+  /* StatusDisplay - 收合按鈕調整（移到面板內側）*/
+  .collapse-toggle {
+    width: 20px;
+    height: 50px;
+    top: 10px;
+    transform: none;
+  }
+
+  /* 右側面板的按鈕移到內側 */
+  .collapse-toggle.right {
+    left: 0;
+    border-left: none;
+    border-right: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* 右側 + 收合狀態（貼在螢幕右側）*/
+  .collapse-toggle.right.collapsed {
+    left: auto;
+    right: 0;
+    border-left: 1px solid var(--SmartThemeBorderColor);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+  }
+
+  /* 左側面板的按鈕移到內側 */
+  .collapse-toggle.left {
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px 0 0 8px;
+  }
+
+  /* 左側 + 收合狀態（貼在螢幕左側）*/
+  .collapse-toggle.left.collapsed {
+    right: auto;
+    left: 0;
+    border-right: 1px solid var(--SmartThemeBorderColor);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* PanelSettings - 設定面板調整 */
+  .panel-settings-container {
+    min-width: 300px;
+    padding: 12px;
+  }
+
+  .settings-title {
+    font-size: 16px;
+  }
+
+  .setting-item.gal-settings {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .setting-label {
+    width: 100%;
+  }
+
+  .setting-select {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* PanelSettings - 分頁按鈕 */
+  .tab-button {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+
+  /* FieldList - 欄位項目調整 */
+  .field-item {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .field-inputs {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field-type-select {
+    width: 100%;
+  }
+
+  /* FixedFieldsSettings - 固定欄位調整 */
+  .field-left {
+    min-width: 150px;
+  }
+
+  .news-child-label {
+    min-width: 124px;
+  }
+
+  .field-textarea {
+    font-size: 12px;
+  }
+
+  /* PromptEditor - 提示編輯器調整 */
+  .prompt-editor-container {
+    min-width: 280px;
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .prompt-textarea {
+    font-size: 12px;
+  }
+
+  /* CSS 編輯器調整 */
+  .css-textarea {
+    font-size: 12px;
+    min-height: 250px;
+  }
+
+  /* 顏色選擇器調整 */
+  .color-picker-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* 按鈕區域調整 */
+  .panel-actions,
+  .field-actions,
+  .prompt-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .panel-actions .menu_button,
+  .field-actions > .menu_button,
+  .prompt-actions > .menu_button {
+    width: 100%;
+  }
+
+  /* 備份還原按鈕調整 */
+  .backup-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .backup-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .backup-actions .menu_button {
+    width: 100%;
+  }
+}
+
+/* 手機直立 (寬度 <= 480px) */
+@media screen and (max-width: 480px) {
+  /* StatusDisplay - 全螢幕寬度 */
+  .status-panel.left {
+    width: 100vw;
+    left: 0 !important;
+    right: auto !important;
+  }
+
+  .status-panel.right {
+    width: 100vw;
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  /* StatusDisplay - 進一步減少內邊距 */
+  .panel-content {
+    padding: 12px 8px;
+    overflow-y: inherit;
+  }
+
+  .fixed-info-section {
+    gap: 10px;
+    padding: 0;
+  }
+
+  .info-item {
+    padding: 10px;
+  }
+
+  .news-section {
+    padding: 12px;
+  }
+
+  .custom-fields-section {
+    padding: 0 5px;
+  }
+
+  .status-list {
+    padding: 12px;
+  }
+
+  /* StatusDisplay - 縮小字體 */
+  .panel-header h3 {
+    font-size: 16px;
+  }
+
+  .panel-header {
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+  }
+
+  .info-text {
+    font-size: 12px;
+  }
+
+  .info-icon {
+    font-size: 16px;
+  }
+
+  .news-header {
+    font-size: 14px;
+  }
+
+  .news-title {
+    font-size: 12px;
+  }
+
+  .news-content {
+    font-size: 11px;
+  }
+
+  .status-name {
+    font-size: 13px;
+    min-width: 60px;
+    max-width: 80px;
+  }
+
+  .status-item {
+    gap: 10px;
+    padding: 8px 0;
+  }
+
+  /* StatusDisplay - 進度條調整 */
+  .progress-bar-container {
+    height: 14px;
+  }
+
+  .progress-text {
+    font-size: 10px;
+  }
+
+  /* StatusDisplay - 收合按鈕移到內側 */
+  .collapse-toggle {
+    width: 24px;
+    height: 50px;
+    font-size: 12px;
+    top: 10px;
+    transform: none;
+  }
+
+  /* 右側面板的按鈕移到內側 */
+  .collapse-toggle.right {
+    left: 0;
+    border-left: none;
+    border-right: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* 右側 + 收合狀態（貼在螢幕右側）*/
+  .collapse-toggle.right.collapsed {
+    left: auto;
+    right: 0;
+    border-left: 1px solid var(--SmartThemeBorderColor);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+  }
+
+  /* 左側面板的按鈕移到內側 */
+  .collapse-toggle.left {
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px 0 0 8px;
+  }
+
+  /* 左側 + 收合狀態（貼在螢幕左側）*/
+  .collapse-toggle.left.collapsed {
+    right: auto;
+    left: 0;
+    border-right: 1px solid var(--SmartThemeBorderColor);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+  }
+
+  /* PanelSettings - 最小化設定面板 */
+  .panel-settings-container {
+    min-width: 100%;
+    padding: 10px;
+  }
+
+  .settings-title {
+    font-size: 15px;
+  }
+
+  .setting-item {
+    margin-bottom: 12px;
+  }
+
+  .setting-label {
+    font-size: 14px;
+  }
+
+  .setting-select {
+    max-width: 100%;
+  }
+
+  /* 分頁按鈕進一步縮小 */
+  .tab-button {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  /* FieldList - 欄位列表最小化 */
+  .field-list-container {
+    padding: 8px;
+  }
+
+  .field-item {
+    padding: 6px;
+  }
+
+  .drag-handle {
+    font-size: 14px;
+  }
+
+  .field-delete {
+    font-size: 16px;
+  }
+
+  .text_pole {
+    padding: 5px 8px;
+    font-size: 13px;
+  }
+
+  .field_key {
+    width: 100%;
+  }
+
+  /* FixedFieldsSettings - 縮小固定欄位 */
+  .fixed-field-item {
+    padding: 10px;
+  }
+
+  .field-left {
+    min-width: 120px;
+  }
+
+  .news-child-row {
+    margin-left: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .news-child-label {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .field-textarea {
+    width: 100%;
+    font-size: 11px;
+    max-height: 100px;
+  }
+
+  .field-name {
+    font-size: 13px;
+  }
+
+  .field-checkbox {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* PromptEditor - 最小化提示編輯器 */
+  .prompt-editor-container {
+    padding: 10px;
+  }
+
+  .prompt-field label {
+    font-size: 13px;
+  }
+
+  .prompt-textarea {
+    min-height: 50px;
+    font-size: 11px;
+  }
+
+  /* CSS 編輯器最小化 */
+  .css-textarea {
+    font-size: 11px;
+    min-height: 200px;
+  }
+
+  .css-editor-tips {
+    font-size: 11px;
+  }
+
+  /* 進度條預覽調整 */
+  .progress-preview {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .preview-label {
+    width: 100%;
+  }
+
+  .preview-bar-container {
+    width: 100%;
+  }
+
+  /* 顏色選擇器調整 */
+  .color-input {
+    height: 35px;
+  }
+
+  .color-value {
+    font-size: 11px;
+  }
+
+  /* 開關區域調整 */
+  .toggles-container {
+    gap: 10px;
+  }
+
+  .toggle-item label {
+    font-size: 13px;
+  }
+
+  /* 連結按鈕調整 */
+  .links-container {
+    flex-direction: column;
+  }
+
+  .link-button {
+    min-width: 100%;
+  }
+}
