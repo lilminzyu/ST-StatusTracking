@@ -29,83 +29,95 @@
 
     <!-- 面板內容 -->
     <div v-show="!settings.panel_collapsed" class="panel-content">
-      
+
       <!-- 標題 -->
       <div class="panel-header">
         <h3>{{ t`狀態追蹤` }}</h3>
       </div>
 
-      <!-- 固定資訊區 -->
-      <div class="fixed-info-section">
-        <div class="info-item">
-          <div v-if="settings.fixed_fields_enabled.time">
-            <span class="info-icon">📅</span>
-            <span class="info-text">{{ statusData.data.date }}</span>
-          </div>
-          <div v-if="settings.fixed_fields_enabled.place">
-            <span class="info-icon">📍</span>
-            <span class="info-text">{{ statusData.data.location }}</span>
-          </div>
-          <div v-if="settings.fixed_fields_enabled.weather">
-            <span class="info-icon">🌤️</span>
-            <span class="info-text">{{ statusData.data.weather }}</span>
-          </div>
-        </div>
-
-        <!-- 新鮮事區塊 -->
-        <div v-if="settings.fixed_fields_enabled.news" class="news-section">
-          <div class="news-section2">
-            <div class="news-header">{{ statusData.data.news.type}}</div>
-            <div class="news-no-header">
-              <div class="news-divider"></div>
-              <div class="news-title">{{ statusData.data.news.title }}</div>
-              <div class="news-content">{{ statusData.data.news.content }}</div>
-            </div>
-          </div>
-        </div>
+      <!-- 空狀態提示 -->
+      <div v-if="!hasAnyStatus" class="no-status-hint">
+        {{ t`還沒有狀態能追蹤哦(oﾟvﾟ)ノ 給AI發送一條消息叭！` }}
       </div>
 
-      <!-- 用戶自訂欄位區 -->
-      <div class="custom-fields-section">
-        <!-- 狀態顯示區 -->
-        <div class="status-list">
-          <!-- 動態顯示用戶設定的欄位 -->
-          <div
-            v-for="field in enabledFields"
-            :key="field.id"
-            class="status-item"
-          >
-            <span class="status-name">{{ field.name }}</span>
+      <!-- 有狀態時才顯示 -->
+      <template v-else>
+        <!-- 固定資訊區 -->
+        <div v-if="hasFixedFields" class="fixed-info-section">
+          <div class="info-item">
+            <div v-if="settings.fixed_fields_enabled.time && statusData.data.date">
+              <span class="info-icon">📅</span>
+              <span class="info-text">{{ statusData.data.date }}</span>
+            </div>
+            <div v-if="settings.fixed_fields_enabled.place && statusData.data.location">
+              <span class="info-icon">📍</span>
+              <span class="info-text">{{ statusData.data.location }}</span>
+            </div>
+            <div v-if="settings.fixed_fields_enabled.weather && statusData.data.weather">
+              <span class="info-icon">🌤️</span>
+              <span class="info-text">{{ statusData.data.weather }}</span>
+            </div>
+          </div>
 
-            <!-- 數字類型：顯示進度條 -->
-            <div v-if="field.type === 'number'" class="status-value">
-              <div
-                class="progress-bar-container"
-                :style="{
-                  '--progress-low-color': settings.progress_color_low,
-                  '--progress-high-color': settings.progress_color_high
-                }"
-              >
-                <div
-                  class="progress-bar-fill"
-                  :style="{ width: getProgressPercentage(field.id) + '%' }"
-                ></div>
-                <span class="progress-text">{{ getDisplayText(field.id) }}</span>
+          <!-- 新鮮事區塊 -->
+          <div v-if="settings.fixed_fields_enabled.news && hasNewsContent" class="news-section">
+            <div class="news-section2">
+              <div class="news-header">{{ statusData.data.news.type}}</div>
+              <div class="news-no-header">
+                <div class="news-divider"></div>
+                <div class="news-title">{{ statusData.data.news.title }}</div>
+                <div class="news-content">{{ statusData.data.news.content }}</div>
               </div>
             </div>
-
-            <!-- 文字類型：純文字顯示 -->
-            <div v-else class="status-value">
-              <span class="value-text">{{ statusData.data.customFields[field.id] || '—' }}</span>
-            </div>
-          </div>
-
-          <!-- 如果沒有啟用的欄位，顯示提示 -->
-          <div v-if="enabledFields.length === 0" class="empty-hint">
-            {{ t`尚未設定欄位，請點擊下方「欄位設定」按鈕` }}
           </div>
         </div>
-      </div>
+
+        <!-- 用戶自訂欄位區 -->
+        <div v-if="hasCustomFields" class="custom-fields-section">
+          <!-- 狀態顯示區 -->
+          <div class="status-list">
+            <!-- 動態顯示用戶設定的欄位 -->
+            <div
+              v-for="field in fieldsWithContent"
+              :key="field.id"
+              class="status-item"
+            >
+              <span class="status-name">{{ field.name }}</span>
+
+              <!-- 數字類型：顯示進度條 -->
+              <div v-if="field.type === 'number'" class="status-value">
+                <div
+                  class="progress-bar-container"
+                  :style="{
+                    '--progress-low-color': settings.progress_color_low,
+                    '--progress-high-color': settings.progress_color_high
+                  }"
+                >
+                  <div
+                    class="progress-bar-fill"
+                    :style="{ width: getProgressPercentage(field.id) + '%' }"
+                  ></div>
+                  <span class="progress-text">{{ getDisplayText(field.id) }}</span>
+                </div>
+              </div>
+
+              <!-- 文字類型：純文字顯示 -->
+              <div v-else class="status-value">
+                <span class="value-text">{{ statusData.data.customFields[field.id] }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 備忘錄區 -->
+        <div v-if="settings.fixed_fields_enabled?.notes && statusData.data.notes" class="notes-section">
+          <div class="notes-content">
+            <div class="notes-header">{{t`備忘錄`}}</div>
+            <div class="news-divider"></div>
+            <div class="notes-text">{{ statusData.data.notes }}</div>
+          </div>
+        </div>
+      </template>
 
       <!-- 按鈕區 -->
       <div class="panel-actions">
@@ -150,11 +162,51 @@ const getCollapseIcon = computed(() => {
   }
 });
 
-// 只顯示啟用的欄位，並按 order 排序;p
+// 只顯示啟用的欄位，並按 order 排序
 const enabledFields = computed(() => {
   return settings.value.fields
     .filter(f => f.enabled)
     .sort((a, b) => a.order - b.order);
+});
+
+// 只顯示有內容的欄位
+const fieldsWithContent = computed(() => {
+  return enabledFields.value.filter(field => {
+    const value = statusData.data.customFields[field.id];
+    // 檢查是否有值（排除 undefined, null, 空字串）
+    if (value === undefined || value === null || value === '') return false;
+    // 如果是 NumberFieldValue 物件，檢查 value 屬性
+    if (typeof value === 'object' && 'value' in value) {
+      return value.value !== undefined && value.value !== null;
+    }
+    return true;
+  });
+});
+
+// 檢查是否有新聞內容
+const hasNewsContent = computed(() => {
+  return !!(statusData.data.news.type || statusData.data.news.title || statusData.data.news.content);
+});
+
+// 檢查是否有固定欄位內容
+const hasFixedFields = computed(() => {
+  const hasTime = settings.value.fixed_fields_enabled.time && statusData.data.date;
+  const hasPlace = settings.value.fixed_fields_enabled.place && statusData.data.location;
+  const hasWeather = settings.value.fixed_fields_enabled.weather && statusData.data.weather;
+  const hasNews = settings.value.fixed_fields_enabled.news && hasNewsContent.value;
+
+  return !!(hasTime || hasPlace || hasWeather || hasNews);
+});
+
+// 檢查是否有自訂欄位內容
+const hasCustomFields = computed(() => {
+  return fieldsWithContent.value.length > 0;
+});
+
+// 檢查是否有任何狀態內容
+const hasAnyStatus = computed(() => {
+  const hasNotes = settings.value.fixed_fields_enabled.notes && statusData.data.notes;
+  return hasFixedFields.value || hasCustomFields.value || hasNotes;
 });
 
 // 計算進度條百分比（假設數字範圍是 0-100）

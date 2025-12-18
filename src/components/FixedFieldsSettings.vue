@@ -79,8 +79,8 @@
 
         <!-- 新鮮事類型 -->
         <div class="news-child-row">
-          <div class="news-child-label">
-            <label class="field-name">{{ t`新鮮事類型` }} (type)</label>
+          <div class="field-left news-child-label">
+            <label class="field-name">{{ t`新鮮事類型` }}</label>
           </div>
           <textarea
             v-model="editablePrompt.newsType"
@@ -92,8 +92,8 @@
 
         <!-- 新鮮事標題 -->
         <div class="news-child-row">
-          <div class="news-child-label">
-            <label class="field-name">{{ t`新鮮事標題` }} (title)</label>
+          <div class="field-left news-child-label">
+            <label class="field-name">{{ t`新鮮事標題` }}</label>
           </div>
           <textarea
             v-model="editablePrompt.newsTitle"
@@ -105,8 +105,8 @@
 
         <!-- 新鮮事內文 -->
         <div class="news-child-row">
-          <div class="news-child-label">
-            <label class="field-name">{{ t`新鮮事內文` }} (content)</label>
+          <div class="field-left news-child-label">
+            <label class="field-name">{{ t`新鮮事內文` }}</label>
           </div>
           <textarea
             v-model="editablePrompt.newsContent"
@@ -115,6 +115,27 @@
             :disabled="!tempFixedFieldsEnabled.news"
           />
         </div>
+      </div>
+    </div>
+
+    <!-- 備忘錄欄位 -->
+    <div class="fixed-field-item" :class="{ disabled: !tempFixedFieldsEnabled.notes }">
+      <div class="field-row">
+        <div class="field-left">
+          <input
+            id="fixed-field-notes"
+            v-model="tempFixedFieldsEnabled.notes"
+            type="checkbox"
+            class="field-checkbox"
+          />
+          <label for="fixed-field-notes" class="field-name">{{ t`備忘錄` }}</label>
+        </div>
+        <textarea
+          v-model="editablePrompt.notes"
+          class="text_pole field-textarea"
+          :placeholder="defaultPrompt.notes"
+          :disabled="!tempFixedFieldsEnabled.notes"
+        />
       </div>
     </div>
 
@@ -130,6 +151,7 @@
 import { DEFAULT_PROMPT_EN, DEFAULT_PROMPT_ZH_TW } from '@/promptGenerator';
 import { useI18nStore } from '@/store/i18n';
 import type { CustomPrompt, FixedFieldsEnabled, Settings } from '@/type/settings';
+import { Popup, POPUP_RESULT, POPUP_TYPE } from '@sillytavern/scripts/popup';
 
 const props = defineProps<{
   initialSettings: Settings;
@@ -143,6 +165,7 @@ const tempFixedFieldsEnabled = ref<FixedFieldsEnabled>({
   place: props.initialSettings.fixed_fields_enabled.place,
   weather: props.initialSettings.fixed_fields_enabled.weather,
   news: props.initialSettings.fixed_fields_enabled.news,
+  notes: props.initialSettings.fixed_fields_enabled.notes,
 });
 
 // 根據當前語言取得預設 prompt
@@ -160,6 +183,7 @@ const editablePrompt = ref({
   newsType: '',
   newsTitle: '',
   newsContent: '',
+  notes: '',
 });
 
 // 初始化 editablePrompt（合併自訂和預設值）
@@ -175,6 +199,7 @@ watch(
       newsType: newPrompt?.newsType || defaults.newsType,
       newsTitle: newPrompt?.newsTitle || defaults.newsTitle,
       newsContent: newPrompt?.newsContent || defaults.newsContent,
+      notes: newPrompt?.notes || defaults.notes,
     };
   },
   { immediate: true }
@@ -190,7 +215,13 @@ watch(
 );
 
 // 恢復預設 Prompt
-function restorePrompt() {
+async function restorePrompt() {
+  // 彈出確認對話框
+  const popup = new Popup('確定要恢復預設 Prompt 嗎？', POPUP_TYPE.CONFIRM);
+  const result = await popup.show();
+
+  if (result !== POPUP_RESULT.AFFIRMATIVE) return;
+
   const defaults = props.initialSettings.language === 'en' ? DEFAULT_PROMPT_EN : DEFAULT_PROMPT_ZH_TW;
   editablePrompt.value = {
     time: defaults.time,
@@ -199,6 +230,7 @@ function restorePrompt() {
     newsType: defaults.newsType,
     newsTitle: defaults.newsTitle,
     newsContent: defaults.newsContent,
+    notes: defaults.notes,
   };
 }
 
@@ -225,6 +257,9 @@ function getData() {
   }
   if (editablePrompt.value.newsContent?.trim() && editablePrompt.value.newsContent !== defaults.newsContent) {
     promptToSave.newsContent = editablePrompt.value.newsContent.trim();
+  }
+  if (editablePrompt.value.notes?.trim() && editablePrompt.value.notes !== defaults.notes) {
+    promptToSave.notes = editablePrompt.value.notes.trim();
   }
 
   return {

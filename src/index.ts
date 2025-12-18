@@ -37,6 +37,7 @@ $(() => {
       statusDataStore.data.location = data.location;
       statusDataStore.data.weather = data.weather;
       statusDataStore.data.news = data.news;
+      statusDataStore.data.notes = data.notes;
       statusDataStore.data.customFields = data.customFields;
     },
     () => {

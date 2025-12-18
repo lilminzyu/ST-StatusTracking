@@ -28,6 +28,7 @@ const CustomPromptSchema = z.object({
   newsType: z.string().optional(),
   newsTitle: z.string().optional(),
   newsContent: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 // 4. Fixed Fields Enabled schema（固定欄位的啟用/停用開關）
@@ -36,6 +37,7 @@ const FixedFieldsEnabledSchema = z.object({
   place: z.boolean(),
   weather: z.boolean(),
   news: z.boolean(),
+  notes: z.boolean(),
 });
 
 // 5. Settings schema
@@ -74,6 +76,7 @@ export const Settings = z
       place: true,
       weather: true,
       news: true,
+      notes: true,
     }), // 固定欄位開關
     custom_css: z.string().default(''), // 用戶自訂 CSS（為未來功能預留）
   })

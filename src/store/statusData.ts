@@ -14,6 +14,7 @@ export const useStatusDataStore = defineStore('statusData', () => {
       title: '',
       content: '',
     },
+    notes: '',
     customFields: {} as Record<string, number | string | NumberFieldValue>
   });
 
@@ -28,6 +29,7 @@ export const useStatusDataStore = defineStore('statusData', () => {
         title: '',
         content: '',
       },
+      notes: '',
       customFields: {}
     };
   }

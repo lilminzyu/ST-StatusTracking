@@ -65,6 +65,7 @@ import { generateUUID } from '@/utils/uuid';
 import Sortable from 'sortablejs';
 import FieldItem from './FieldItem.vue';
 import FixedFieldsSettings from './FixedFieldsSettings.vue';
+import { Popup, POPUP_RESULT, POPUP_TYPE } from '@sillytavern/scripts/popup';
 
 const { t } = useI18nStore();
 
@@ -141,7 +142,13 @@ function deleteField(id: string) {
 }
 
 // 恢復預設欄位
-function resetToDefault() {
+async function resetToDefault() {
+  // 彈出確認對話框
+  const popup = new Popup('確定要恢復預設欄位嗎？', POPUP_TYPE.CONFIRM);
+  const result = await popup.show();
+
+  if (result !== POPUP_RESULT.AFFIRMATIVE) return;
+
   tempFields.value = [
     {
       id: generateUUID(),

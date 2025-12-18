@@ -12,6 +12,7 @@ export const DEFAULT_PROMPT_ZH_TW = {
   newsType: '當前社會上發生的事物標題類型標籤, 例如【論壇熱帖】【科普新聞】【社會話題】等, 必須用【】包起來',
   newsTitle: '強制必需與劇情或者人物相關。帶幽默微搞笑神經, 與上一輪不可相同類型, 每一輪都要不同類型, 請發揮想像力',
   newsContent: '這則事物的內文,如果是新聞就以新聞語氣播報、如果是論壇就以網友網路言論語氣為主, 以此類推。100字以內',
+  notes: '<char>當前手機內的的備忘錄或待辦事項, 以條列式呈現, 每項不超過30字, 像是寫給自己看那樣的語氣',
 };
 
 /**
@@ -24,6 +25,7 @@ export const DEFAULT_PROMPT_ZH_CN = {
   newsType: '当前社会上发生的事物标题类型标签, 例如【论坛热帖】【科普新闻】【社会话题】等, 必须用【】包起来',
   newsTitle: '强制必需与剧情或者人物相关。带幽默微搞笑神经, 与上一轮不可相同类型, 每一轮都要不同类型, 请发挥想象力',
   newsContent: '这则事物的内文,如果是新闻就以新闻语气播报、如果是论坛就以网友网络言论语气为主, 以此类推。100字以内',
+  notes: '<char>当前手机内的的备忘录或待办事项, 以条列式呈现, 每项不超过30字, 像是写给自己看那样的语气',
 };
 
 /**
@@ -36,6 +38,7 @@ export const DEFAULT_PROMPT_EN = {
   newsType: 'Current event type label in society, e.g. [Forum Hot Post] [Science News] [Social Topic] etc., must be wrapped in []',
   newsTitle: 'Must be related to the plot or characters. Bring humorous and funny vibes, must be different type from previous round, each round must have different type, use your imagination',
   newsContent: 'The content of this event, if it\'s news then broadcast in news tone, if it\'s forum then use netizen internet speech tone, and so on. Within 100 words',
+  notes: '\<char\>\'s current notes or to-do list on phone, presented in bullet points, each item within 30 words, as if writing for himself/herself',
 };
 
 /**
@@ -51,6 +54,7 @@ export function buildFixedPrompt(
     newsType?: string;
     newsTitle?: string;
     newsContent?: string;
+    notes?: string;
   }
 ): string {
   const defaultPrompt = language === 'en'
@@ -81,6 +85,9 @@ export function buildFixedPrompt(
   if (fixedFieldsEnabled.news) {
     lines.push(`news:\n  type: \${${prompt.newsType || defaultPrompt.newsType}}\n  title: \${${prompt.newsTitle || defaultPrompt.newsTitle}}\n  content: \${${prompt.newsContent || defaultPrompt.newsContent}}`);
   }
+  if (fixedFieldsEnabled.notes) {
+    lines.push(`notes: \${${prompt.notes || defaultPrompt.notes}}`);
+  }
 
   return `${header}
 \`\`\`myst
@@ -103,6 +110,7 @@ export function generateStatusPrompt(
     place: true,
     weather: true,
     news: true,
+    notes: true,
   },
   customPrompt?: {
     time?: string;
@@ -111,6 +119,7 @@ export function generateStatusPrompt(
     newsType?: string;
     newsTitle?: string;
     newsContent?: string;
+    notes?: string;
   }
 ): string {
   const fixedPrompt = buildFixedPrompt(language, fixedFieldsEnabled, customPrompt);
@@ -144,6 +153,7 @@ let currentFixedFieldsEnabled: FixedFieldsEnabled = {
   place: true,
   weather: true,
   news: true,
+  notes: true,
 };
 let currentCustomPrompt: {
   time?: string;
@@ -152,6 +162,7 @@ let currentCustomPrompt: {
   newsType?: string;
   newsTitle?: string;
   newsContent?: string;
+  notes?: string;
 } | undefined = undefined;
 let isEnabled = false;
 
@@ -170,6 +181,7 @@ export function enablePromptInjection(
     place: true,
     weather: true,
     news: true,
+    notes: true,
   },
   customPrompt?: {
     time?: string;
@@ -178,6 +190,7 @@ export function enablePromptInjection(
     newsType?: string;
     newsTitle?: string;
     newsContent?: string;
+    notes?: string;
   }
 ): void {
   currentFields = fields;

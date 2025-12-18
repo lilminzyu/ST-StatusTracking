@@ -61,6 +61,7 @@ export function processStatusData(
   location: string;
   weather: string;
   news: { type: string; title: string; content: string };
+  notes: string;
   customFields: Record<string, string | number | NumberFieldValue>;
 } {
   // 固定欄位（優先使用英文 key，中文作為備用以保持向後兼容）
@@ -73,7 +74,23 @@ export function processStatusData(
       title: rawData['news']?.['title'] || rawData['新鮮事']?.['標題'] || '',
       content: rawData['news']?.['content'] || rawData['新鮮事']?.['內文'] || '',
     },
+    notes: parseNotesField(rawData['notes'] || rawData['備忘錄'] || rawData['待辦事項'] || ''),
   };
+
+  /**
+   * 解析 notes 欄位，處理陣列格式
+   */
+  function parseNotesField(value: any): string {
+    if (!value) return '';
+
+    // 如果是陣列，轉換為條列式字串
+    if (Array.isArray(value)) {
+      return value.map(item => `- ${String(item).trim()}`).join('\n');
+    }
+
+    // 如果是字串，直接返回
+    return String(value);
+  }
 
   // 動態欄位：根據用戶設定的欄位名稱來匹配
   const customFields: Record<string, string | number | NumberFieldValue> = {};
