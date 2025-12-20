@@ -1,4 +1,5 @@
 import { generateUUID } from '@/utils/uuid';
+import { z } from 'zod';
 
 // 1. 先定義 type（用來給其他地方 import）
 export type Field = {
