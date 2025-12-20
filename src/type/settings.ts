@@ -34,11 +34,11 @@ const CustomPromptSchema = z.object({
 
 // 4. Fixed Fields Enabled schema（固定欄位的啟用/停用開關）
 const FixedFieldsEnabledSchema = z.object({
-  time: z.boolean(),
-  place: z.boolean(),
-  weather: z.boolean(),
-  news: z.boolean(),
-  notes: z.boolean(),
+  time: z.boolean().default(true),
+  place: z.boolean().default(true),
+  weather: z.boolean().default(true),
+  news: z.boolean().default(true),
+  notes: z.boolean().default(true),
 });
 
 // 5. Settings schema
