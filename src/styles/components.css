@@ -1006,6 +1006,44 @@
   border-radius: 4px;
 }
 
+/* PanelSettings - 配置管理
+-------------------------------------- */
+.preset-select-wrapper {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  width: 75%;
+}
+
+.preset-select-wrapper .setting-select {
+  flex: 1;
+  width: auto;
+}
+
+.preset-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.preset-actions .menu_button_icon {
+  padding: 6px 8px;
+}
+
+.preset-actions .menu_button_icon.disabled,
+.menu_button_icon.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.bound-preset-name {
+  flex: 1;
+  padding: 4px 8px;
+  background: rgba(100, 200, 100, 0.15);
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 /* PanelSettings - 備份與還原
 -------------------------------------- */
 .backup-header {

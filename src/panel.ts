@@ -1,10 +1,9 @@
 import Panel from '@/Panel.vue';
-import { createPinia } from 'pinia';
+import { pinia } from '@/store/pinia';
 import { App, createApp } from 'vue';
 
 const app = createApp(Panel);
 
-const pinia = createPinia();
 app.use(pinia);
 
 declare module 'vue' {

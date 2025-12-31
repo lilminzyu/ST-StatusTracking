@@ -41,6 +41,23 @@ const FixedFieldsEnabledSchema = z.object({
   notes: z.boolean().default(true),
 });
 
+// 4.5 Preset schema（配置預設）
+const PresetDataSchema = z.object({
+  fields: z.array(FieldSchema),
+  customPrompt: CustomPromptSchema.optional(),
+  fixedFieldsEnabled: FixedFieldsEnabledSchema,
+  customCSS: z.string(),
+  progressColorLow: z.string(),
+  progressColorHigh: z.string(),
+});
+
+const PresetSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  createdAt: z.number(),
+  data: PresetDataSchema,
+});
+
 // 5. Settings schema 內部物件
 const SettingsObjectSchema = z.object({
   button_selected: z.boolean().default(false),
@@ -79,6 +96,7 @@ const SettingsObjectSchema = z.object({
     notes: true,
   }), // 固定欄位開關
   custom_css: z.string().default(''), // 用戶自訂 CSS（為未來功能預留）
+  presets: z.array(PresetSchema).default([]), // 配置預設列表
 });
 
 // 6. 使用 preprocess 處理 undefined/null，轉成空物件讓各欄位的 default 生效
@@ -91,6 +109,8 @@ export const Settings = z.preprocess(
 export type Settings = z.infer<typeof Settings>;
 export type CustomPrompt = z.infer<typeof CustomPromptSchema>;
 export type FixedFieldsEnabled = z.infer<typeof FixedFieldsEnabledSchema>;
+export type Preset = z.infer<typeof PresetSchema>;
+export type PresetData = z.infer<typeof PresetDataSchema>;
 
 // 7. 存檔鍵名
 export const setting_field = 'status_tracking';

@@ -137,11 +137,11 @@
 import FieldList from '@/components/FieldList.vue';
 import PanelSettings from '@/components/PanelSettings.vue';
 import { useI18nStore } from '@/store/i18n';
+import { pinia } from '@/store/pinia';
 import { useSettingsStore } from '@/store/settings';
 import { useStatusDataStore } from '@/store/statusData';
 import { logger } from '@/utils/logger';
 import { Popup, POPUP_RESULT, POPUP_TYPE } from '@sillytavern/scripts/popup';
-import { createPinia } from 'pinia';
 import { createApp } from 'vue';
 
 const { settings } = storeToRefs(useSettingsStore());
@@ -270,7 +270,7 @@ async function openFieldSettings() {
     initialFields: settings.value.fields,  // 傳入當前欄位數據
   });
 
-  const pinia = createPinia();
+  // 使用共用的 pinia 實例，確保 store 狀態共享
   fieldApp.use(pinia);
 
   const i18n = {
@@ -297,9 +297,11 @@ async function openFieldSettings() {
   if (result === POPUP_RESULT.AFFIRMATIVE) {
     logger.log('[StatusDisplay] 使用者確認儲存欄位設定');
     const data = instance.getData();
+    logger.log('[StatusDisplay] getData 返回的資料:', JSON.stringify(data.fields));
     settings.value.fields = data.fields;
     settings.value.fixed_fields_enabled = data.fixed_fields_enabled;
     settings.value.custom_prompt = data.custom_prompt;
+    logger.log('[StatusDisplay] 保存後 settings.fields:', JSON.stringify(settings.value.fields));
   } else {
     logger.log('[StatusDisplay] 使用者取消欄位設定');
   }
@@ -316,7 +318,7 @@ async function openPanelSettings() {
     initialSettings: settings.value,
   });
 
-  const pinia = createPinia();
+  // 使用共用的 pinia 實例，確保 store 狀態共享
   settingsApp.use(pinia);
 
   const i18n = {

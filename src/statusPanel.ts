@@ -1,5 +1,5 @@
 import StatusDisplay from '@/components/StatusDisplay.vue';
-import { createPinia } from 'pinia';
+import { pinia } from '@/store/pinia';
 import { App, createApp } from 'vue';
 import 'vue-final-modal/style.css';
 
@@ -28,10 +28,9 @@ export function initStatusPanel() {
   const $container = $('<div id="status-tracking-panel">').appendTo('body');
 
   // 創建 Vue app
-  app = createApp(RootComponent);  
+  app = createApp(RootComponent);
 
-  // 使用 pinia
-  const pinia = createPinia();
+  // 使用共用的 pinia 實例
   app.use(pinia);
 
   app.use(i18n);
