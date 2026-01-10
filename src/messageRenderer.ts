@@ -1,6 +1,5 @@
-import { eventSource, event_types } from '@sillytavern/script';
-import { getContext } from '@sillytavern/scripts/extensions';
 import { logger } from '@/utils/logger';
+import { eventSource, event_types } from '@sillytavern/script';
 
 /**
  * 隱藏單個訊息中的 ```myst 代碼塊
@@ -27,18 +26,11 @@ function hideCodeBlockInMessage(messageElement: JQuery<HTMLElement>) {
       return;
     }
 
-    // 取得代碼塊的原始 HTML（包含語言標記）
-    const preHtml = preElement.html();
-    const codeText = codeElement.text();
-
     // 檢查是否是 ```myst 代碼塊
-    // 方法 1: 檢查 <code> 元素的 class（通常會有 language-myst）
-    // 方法 2: 檢查代碼內容是否符合 YAML 格式且包含我們的欄位
+    // 只檢查是否有 language-myst 標記
     const isMystBlock =
       codeElement.hasClass('language-myst') ||
-      preHtml.includes('language-myst') ||
-      // 簡單的 YAML 格式檢測：多行且包含 key: value 格式
-      (codeText.includes(':') && codeText.split('\n').length > 1);
+      (preElement.html()?.includes('language-myst') ?? false);
 
     if (isMystBlock) {
       logger.log('[messageRenderer] 隱藏 myst 代碼塊');
